@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Codex Professionalis — Rytuał Klasyfikacji</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0807;--bg-panel:#120e0a;--bg-answer:#0d0b08;--bg-answer-hv:#181208;--bg-answer-on:#1d1608;
+  --brd-dark:#2a2018;--brd-mid:#4a3520;--brd-lit:#7a5a30;
+  --gold-dim:#5a4430;--gold-mid:#8a7050;--gold-body:#c0a060;--gold-main:#c8a96a;--gold-bright:#d4a853;
+  --font-title:'Cinzel','Palatino Linotype',serif;
+  --font-body:'EB Garamond',Georgia,'Times New Roman',serif;
+}
+html{font-size:16px;scroll-behavior:smooth}
+body{background-color:var(--bg);background-image:radial-gradient(ellipse at 50% 20%,#1a1208 0%,#050302 65%);min-height:100vh;display:flex;justify-content:center;align-items:flex-start;font-family:var(--font-body);color:var(--gold-main);padding:2rem 1rem 4rem}
+#app{width:100%;max-width:720px;position:relative}
+.screen{display:none}
+.screen.active{display:block;animation:appear 0.4s ease forwards}
+@keyframes appear{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.panel{background:var(--bg-panel);border:1px solid var(--brd-dark);box-shadow:inset 0 0 0 1px #1c1510,0 0 0 4px var(--bg),0 0 0 5px var(--brd-mid),0 8px 60px rgba(0,0,0,.95);padding:2.75rem 2.75rem 2.5rem;position:relative}
+.panel::before,.panel::after{position:absolute;font-size:.6rem;color:var(--brd-mid);pointer-events:none;line-height:1}
+.panel::before{content:'✦';top:.75rem;left:.75rem}
+.panel::after{content:'✦';bottom:.75rem;right:.75rem}
+.panel-inner-frame{position:absolute;inset:10px;border:1px solid #1e1810;pointer-events:none}
+.eyebrow{font-family:var(--font-title);font-size:.65rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold-dim);text-align:center;margin-bottom:.5rem}
+.heading-xl{font-family:var(--font-title);font-size:2rem;font-weight:700;letter-spacing:.06em;color:var(--gold-bright);text-align:center;line-height:1.15;margin-bottom:.3rem}
+.heading-sm{font-family:var(--font-title);font-size:.8rem;letter-spacing:.18em;color:var(--gold-dim);text-align:center;margin-top:.25rem;margin-bottom:1.75rem}
+.body-text{font-size:1.05rem;line-height:1.8;color:var(--gold-body)}
+.text-center{text-align:center}.text-muted{color:var(--gold-mid)}.text-dim{color:var(--gold-dim)}
+.divider{position:relative;height:1px;background:var(--brd-dark);margin:1.75rem 0}
+.divider::before{content:'◈';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--bg-panel);padding:0 .6rem;color:var(--gold-dim);font-size:.65rem}
+.phase-bar{display:flex;align-items:center;justify-content:center;gap:.4rem;margin-bottom:1.5rem;font-family:var(--font-title);font-size:.6rem;letter-spacing:.2em}
+.phase-node{color:var(--gold-dim);padding:.2rem .55rem;border:1px solid transparent}
+.phase-node.active{color:var(--gold-mid);border-color:var(--brd-dark)}
+.phase-sep{color:var(--brd-dark)}
+.progress-row{display:flex;justify-content:center;gap:.55rem;margin-bottom:1.75rem;flex-wrap:wrap}
+.pdot{font-size:.7rem;color:var(--brd-dark);transition:color .25s;user-select:none}
+.pdot.done{color:var(--gold-mid)}.pdot.active{color:var(--gold-bright)}
+.q-label{font-family:var(--font-title);font-size:.62rem;letter-spacing:.25em;color:var(--gold-dim);text-transform:uppercase;margin-bottom:.9rem}
+.q-intro{font-style:italic;font-size:.98rem;color:var(--gold-mid);line-height:1.65;margin-bottom:.75rem;padding-left:.1rem}
+.q-text{font-size:1.12rem;line-height:1.7;color:var(--gold-main)}
+.ans-list{display:flex;flex-direction:column;gap:.55rem;margin-top:1.6rem}
+.ans-btn{display:flex;align-items:flex-start;gap:.9rem;width:100%;background:var(--bg-answer);border:1px solid var(--brd-dark);padding:.88rem 1.15rem;color:var(--gold-body);font-family:var(--font-body);font-size:1rem;line-height:1.55;text-align:left;cursor:pointer;transition:background .12s,border-color .12s,color .12s}
+.ans-btn:hover:not(:disabled){background:var(--bg-answer-hv);border-color:var(--brd-lit);color:var(--gold-bright)}
+.ans-btn:disabled{cursor:default}
+.ans-btn.chosen{background:var(--bg-answer-on);border-color:var(--gold-main);color:var(--gold-bright)}
+.ans-mark{font-family:var(--font-title);font-size:.75rem;color:var(--gold-dim);flex-shrink:0;min-width:1.2rem;text-align:center;padding-top:.08rem;user-select:none;transition:color .12s}
+.ans-btn:hover:not(:disabled) .ans-mark,.ans-btn.chosen .ans-mark{color:var(--gold-mid)}
+.btn-rite{display:block;width:100%;background:#0f0c08;border:1px solid var(--brd-mid);padding:.9rem 1.5rem;color:var(--gold-main);font-family:var(--font-title);font-size:.82rem;letter-spacing:.18em;text-align:center;text-transform:uppercase;cursor:pointer;transition:background .12s,border-color .12s,color .12s}
+.btn-rite:hover{background:#1a1408;border-color:var(--gold-main);color:var(--gold-bright)}
+.score-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.5rem;margin:1.5rem 0}
+.score-cell{text-align:center;padding:.75rem .4rem;border:1px solid var(--brd-dark);background:#0d0a07}
+.score-cell.winner{border-color:var(--gold-main);background:#1a1508}
+.score-cell .sc-label{display:block;font-family:var(--font-title);font-size:.52rem;letter-spacing:.08em;color:var(--gold-dim);margin-bottom:.35rem;text-transform:uppercase}
+.score-cell.winner .sc-label{color:var(--gold-mid)}
+.score-cell .sc-val{display:block;font-family:var(--font-title);font-size:1.6rem;color:var(--brd-mid);line-height:1}
+.score-cell.winner .sc-val{color:var(--gold-bright)}
+.cat-reveal{text-align:center;padding:1.25rem 0 .5rem}
+.cat-reveal-label{font-family:var(--font-title);font-size:.6rem;letter-spacing:.25em;color:var(--gold-dim);text-transform:uppercase;margin-bottom:.5rem}
+.cat-reveal-name{font-family:var(--font-title);font-size:2.2rem;font-weight:700;letter-spacing:.08em;color:var(--gold-bright);line-height:1.1}
+.cat-reveal-diegetic{font-family:var(--font-title);font-size:.78rem;letter-spacing:.18em;color:var(--brd-lit);margin-top:.3rem}
+.tie-badge{display:inline-block;font-family:var(--font-title);font-size:.6rem;letter-spacing:.15em;color:var(--gold-dim);border:1px solid var(--brd-dark);padding:.15rem .6rem;margin-top:.6rem;text-transform:uppercase}
+.result-cat-label{font-family:var(--font-title);font-size:.62rem;letter-spacing:.2em;color:var(--brd-lit);text-align:center;text-transform:uppercase;margin-bottom:.4rem}
+.result-title{font-family:var(--font-title);font-size:2.1rem;font-weight:700;letter-spacing:.05em;color:var(--gold-bright);text-align:center;line-height:1.15;margin-bottom:.3rem}
+.result-role{font-family:var(--font-title);font-size:.78rem;letter-spacing:.18em;color:var(--gold-mid);text-align:center}
+.result-flavor{font-style:italic;font-size:1rem;line-height:1.78;color:var(--gold-mid);border-left:2px solid var(--brd-dark);padding-left:1.1rem}
+.result-cols{display:grid;grid-template-columns:1fr 1fr;gap:1.75rem}
+.result-col-label{font-family:var(--font-title);font-size:.6rem;letter-spacing:.2em;color:var(--gold-dim);text-transform:uppercase;margin-bottom:.45rem}
+.result-col-text{font-size:.98rem;line-height:1.65;color:var(--gold-body)}
+.mt-s{margin-top:.5rem}.mt-l{margin-top:2rem}
+/* result guild description */
+.result-guild-desc{font-size:.97rem;line-height:1.72;color:var(--gold-body);margin-bottom:1.5rem}
+@media(max-width:580px){
+  body{padding:1rem .75rem 3rem}
+  .panel{padding:1.75rem 1.25rem 1.5rem}
+  .heading-xl{font-size:1.55rem}
+  .score-grid{grid-template-columns:repeat(3,1fr)}
+  .cat-reveal-name{font-size:1.6rem}
+  .result-title{font-size:1.55rem}
+  .result-cols{grid-template-columns:1fr;gap:1.25rem}
+}
+  </style>
+</head>
+<body>
+<div id="app">
+
+<div id="screen-intro" class="screen active">
+  <div class="panel"><div class="panel-inner-frame"></div>
+    <p class="eyebrow">Protokół Inicjacyjny № 7741‑B</p>
+    <h1 class="heading-xl">CODEX PROFESSIONALIS</h1>
+    <p class="heading-sm">Rytuał Klasyfikacji Profesji &nbsp;◈&nbsp; Królestwo Informacji</p>
+    <div class="divider"></div>
+    <p class="body-text">Archiwista unosi wzrok znad formularza.<br><br>Twoja kandydatura została odnotowana w Rejestrze Oczekujących. Niniejszy rytuał ma na celu określenie twojej przynależności — nie na podstawie tego, co deklarujesz, lecz na podstawie tego, jak działasz.<br><br>Odpowiedz tak, jak <em>naprawdę</em> byś postąpił. Nie tak, jak chciałbyś postąpić. Archiwum odróżnia jedno od drugiego.<br><br>Rytuał jest nieodwracalny. Cofnięcia nie są przewidziane w procedurze.</p>
+    <div class="divider"></div>
+    <button class="btn-rite" onclick="startGame()">◈ &nbsp; Przystępuję do Rytuału &nbsp; ◈</button>
+    <p class="text-center text-dim mt-s" style="font-size:.78rem;letter-spacing:.08em;">10 pytań diagnostycznych (Etap I) + 10 pytań doprecyzowujących (Etap II)</p>
+  </div>
+</div>
+
+<div id="screen-question" class="screen">
+  <div class="panel"><div class="panel-inner-frame"></div>
+    <div id="phase-bar" class="phase-bar">
+      <span class="phase-node" id="ph1">ETAP I</span>
+      <span class="phase-sep">◇</span>
+      <span class="phase-node" id="ph2">ETAP II</span>
+      <span class="phase-sep">◇</span>
+      <span class="phase-node" id="ph3">WYROK</span>
+    </div>
+    <div id="progress-row" class="progress-row"></div>
+    <p id="q-label" class="q-label"></p>
+    <p id="q-intro" class="q-intro"></p>
+    <p id="q-text" class="q-text"></p>
+    <div id="ans-list" class="ans-list"></div>
+  </div>
+</div>
+
+<div id="screen-transition" class="screen">
+  <div class="panel"><div class="panel-inner-frame"></div>
+    <p class="eyebrow">Archiwista składa formularz</p>
+    <p class="body-text text-center text-muted" style="font-size:.9rem;letter-spacing:.04em;">Wyniki Etapu Pierwszego zostały odpieczętowane</p>
+    <div id="score-grid" class="score-grid"></div>
+    <div class="divider"></div>
+    <div class="cat-reveal">
+      <p class="cat-reveal-label">Dominująca pieczęć</p>
+      <div id="cat-name" class="cat-reveal-name"></div>
+      <div id="cat-diegetic" class="cat-reveal-diegetic"></div>
+      <div id="tie-note"></div>
+    </div>
+    <div class="divider"></div>
+    <p id="trans-flavor" class="body-text" style="font-style:italic;font-size:.97rem;color:var(--gold-mid);line-height:1.75"></p>
+    <div class="mt-l">
+      <button class="btn-rite" onclick="startLevel2()">◈ &nbsp; Kontynuuj Rytuał — Etap II &nbsp; ◈</button>
+    </div>
+  </div>
+</div>
+
+<div id="screen-result" class="screen">
+  <div class="panel"><div class="panel-inner-frame"></div>
+    <p class="eyebrow">Archiwista przybija pieczęć</p>
+    <div class="divider"></div>
+    <div id="result-header"></div>
+    <div class="divider"></div>
+    <p id="result-flavor" class="result-flavor"></p>
+    <div class="divider"></div>
+    <div id="result-cols" class="result-cols"></div>
+    <div class="divider"></div>
+    <div id="result-guild-section"></div>
+    <div class="mt-l">
+      <button class="btn-rite" onclick="restartGame()">◇ &nbsp; Powtórz Rytuał &nbsp; ◇</button>
+    </div>
+  </div>
+</div>
+
+</div>
+<script>
+'use strict';
+
+// ══════════════════════════════════════════════════════════════════
+// CATEGORIES
+// ══════════════════════════════════════════════════════════════════
+const CATEGORIES = {
+  KODEKS: {
+    id:'KODEKS', name:'KODEKS', diegetic:'Gildia Konstruktorów',
+    flavor:'Twoje odpowiedzi ujawniły instynkt budowniczego — szukasz kodu, logiki i struktury tam, gdzie inni szukają ludzi albo liczb. Pierwsza myśl to zawsze: co się zmieniło i jak to naprawić.',
+    desc:'To ci, którzy rozmawiają ze światem w języku run i formuł. Siedzą najczęściej przy stołach zasłanych zwojami, gdzie każda linijka znaków może stworzyć nowego golema, obudzić demona wróżbiarskiego albo rozpuścić cały zamek w absurdzie. Twórcy Kodów pilnują, by zaklęcia działały tak, jak zostały wymyślone: szukają sprzeczności w pergaminach, poprawiają stare rytuały, tworzą nowe mechanizmy, które później inni będą nazywać „systemami". Kto należy do tej gildii, ten lubi rozbierać rzeczy na czyste reguły, poprawiać każdą krzywą literę i widzi błędy tam, gdzie inni widzą „drobny szczegół".'
+  },
+  FUNDAMENT: {
+    id:'FUNDAMENT', name:'FUNDAMENT', diegetic:'Kult Machin',
+    flavor:'Twoje odpowiedzi ujawniły instynkt strażnika ciągłości — twój pierwszy odruch to środowisko, zasoby i stan systemów. Zanim zapytasz o kod, sprawdzasz czy maszyna w ogóle odpowiada.',
+    desc:'To ci, którzy mieszkają bliżej podziemi niż nieba i wiedzą, że cokolwiek wymyślą inni, na końcu i tak spadnie to na ich stropy. Schodzą tam, gdzie kończy się wygodny kamień, a zaczynają się rury, koła zębate, kryształy mocy i dawne zaklęcia, które ciągle pracują, choć nikt już nie pamięta ich autorów. Fundamentowi pilnują, by wszystko, co Twórcy Kodów narysowali na pergaminach, naprawdę dało się odprawić w kamieniu i żelazie. Kto należy do tej gildii, ten ufa kamieniowi bardziej niż obietnicom, liczy uderzenia serca mechanizmów, zna zapach przegrzanego żelaza i wie, że najmniejsze pęknięcie w fundamentach najczęściej powstaje wtedy, gdy ktoś na górze powiedział: „co może pójść źle?".'
+  },
+  STRAZ: {
+    id:'STRAZ', name:'STRAŻ', diegetic:'Bractwo Szyfrów',
+    flavor:'Twoje odpowiedzi ujawniły instynkt inkwizytora — pytasz o dostęp, ślady i integralność zanim zaczniesz naprawiać. Tam gdzie inni widzą błąd, ty widzisz wektor zagrożenia.',
+    desc:'To ci, którzy widzą drzwi tam, gdzie inni widzą tylko ściany. Stoją między zamkiem a światem, między demonem a złym pytaniem, między ciekawskim a rzeczami, które nie lubią być dotykane. Strażnicy pilnują pieczęci, kluczy, zakazanych przejść i cichych kanałów, którymi potrafi wpełznąć coś obcego. Nie ufają zdaniom zaczynającym się od „przecież nikt tam nie wejdzie". Liczą ryzyko, śledzą ślady, pamiętają o klątwach, które siedzą w najmniejszych otworach w murze. Kto należy do tej gildii, ten ma dobrą pamięć do twarzy, złe przeczucia wobec otwartych drzwi i zwyczaj zadawania pytań wtedy, gdy wszyscy inni już z ulgą przestali.'
+  },
+  ZGROMADZENIE: {
+    id:'ZGROMADZENIE', name:'ZGROMADZENIE', diegetic:'Trybunał Zamiarów',
+    flavor:'Twoje odpowiedzi ujawniły instynkt koordynatora — za każdym problemem widzisz najpierw ludzi i procesy. Bez uzgodnienia i odpowiedzialnej osoby żaden problem nie jest problemem — tylko incydentem bez właściciela.',
+    desc:'To ci, którzy częściej siedzą przy stołach niż przy runach. Zbierają w jednej sali skrybów, żołnierzy, posłańców z odległych księstw, czasem nawet same księżniczki — i próbują z tego zrobić coś, co da się nazwać „jednym dziełem", a nie zbiorem sprzecznych życzeń. Zwołujący tłumaczą słowa Wieży ludziom na zewnątrz i odwrotnie. Pilnują zakresu, terminu, celu, a przede wszystkim tego, by ktoś w końcu powiedział na głos, co tak naprawdę chce osiągnąć. Kto należy do tej gildii, ten lubi rozmawiać, ale nie dla samej rozmowy: słucha, wyciąga wnioski i wie, że jedno źle postawione słowo potrafi kosztować więcej niż tydzień pracy demonów.'
+  },
+  WYROCZNIA: {
+    id:'WYROCZNIA', name:'WYROCZNIA', diegetic:'Zakon Wyroczni',
+    flavor:'Twoje odpowiedzi ujawniły instynkt analityka — szukasz wzorca, historii i liczb zanim zadziałasz. Twoja pierwsza myśl to pytanie: kiedy to się zaczęło i czy zdarzyło się już wcześniej.',
+    desc:'To ci, którzy patrzą na liczby, jak inni patrzą na gwiazdy. Siedzą w wysokich komnatach, gdzie ściany zasłane są wykresami, a w szklanych naczyniach drzemią demony wróżbiarskie, karmione zwojami danych. Wyrocznie pytają nie tylko „co się stało?", ale „dlaczego?" i „co będzie dalej, jeśli nic nie zmienimy?". Z rozrzuconych liczb budują opowieści o przyszłości królestw, zamków i pojedynczych ludzi. Potrafią znaleźć wzór w szumie, anomalię w pozornej normalności i punkt, w którym świat skręci, choć jeszcze nikt tego nie widzi. Kto należy do tej gildii, ten lubi czuć ciężar decyzji, które zapadną dopiero za rok.'
+  }
+};
+
+// ══════════════════════════════════════════════════════════════════
+// SUBTYPES + RESULT DESCRIPTIONS (profile, flavor, path, guild desc)
+// ══════════════════════════════════════════════════════════════════
+const SUBTYPES = {
+  BACKEND:  {name:'Rzeźbiarz Wnętrza Świętych Machin',     role:'Backend Developer / Software Engineer',         cat:'KODEKS'},
+  FRONTEND: {name:'Tkacz Oblicza i Obliczań',              role:'Frontend Developer / UX·UI Engineer',           cat:'KODEKS'},
+  TESTER:   {name:'Ten, Który Sprawdza, Czy Katedra Naprawdę Stoi', role:'QA Engineer / SDET / Tester',         cat:'KODEKS'},
+  SUPPORT:  {name:'Zwiadowca Udręki',                      role:'IT Support Specialist / Helpdesk',              cat:'FUNDAMENT'},
+  SYSADMIN: {name:'Strażnik Murów, Źródeł i Kluczy',      role:'SysAdmin / Administrator Systemów',             cat:'FUNDAMENT'},
+  DEVOPS:   {name:'Mistrz Rytuałów, Które Robią Się Same', role:'DevOps / Platform Engineer / SRE',             cat:'FUNDAMENT'},
+  SECDEF:   {name:'Żelazny Strażnik Bram',                 role:'Security Engineer (Defense / Blue Team)',        cat:'STRAZ'},
+  PENTEST:  {name:'Cichy Włamywacz w Służbie Straży',      role:'Pentester / Red Teamer',                        cat:'STRAZ'},
+  GRC:      {name:'Prawodawca Pieczęci i Ksiąg',           role:'GRC / Compliance / Risk Analyst',               cat:'STRAZ'},
+  PM:       {name:'Mistrz Księgi Drogi',                   role:'Project Manager',                               cat:'ZGROMADZENIE'},
+  SM:       {name:'Strażnik Obrzędów Drużyny',             role:'Scrum Master / Facylitator Zespołu',            cat:'ZGROMADZENIE'},
+  BA:       {name:'Tłumacz Zwojów i Intencji',             role:'Business Analyst / Product Analyst',            cat:'ZGROMADZENIE'},
+  PO:       {name:'Właściciel Proroctwa',                  role:'Product Owner',                                  cat:'ZGROMADZENIE'},
+  DATAENG:  {name:'Architekt Rur i Kamiennych Zwojów',     role:'Data Engineer',                                  cat:'WYROCZNIA'},
+  DATASCI:  {name:'Wróżbita Liczb i Sensu',                role:'Data Scientist / Analityk Zaawansowany',        cat:'WYROCZNIA'},
+  AIML:     {name:'Pętacz Demonów Przepowiadających',      role:'ML Engineer / AI Engineer',                     cat:'WYROCZNIA'},
+  INTERN:   {name:'Nowicjusz z Otwartymi Oczami',          role:'Junior / Trainee / Stażysta',                   cat:null, special:true},
+  FTI:      {name:'Wieczny Dyletant',                      role:'[Stanowisko w trakcie weryfikacji]',            cat:null, special:true},
+  PROFUSER: {name:'Użytkownik Graniczny',                  role:'Professional / Power User',                     cat:null, special:true}
+};
+
+const RESULTS = {
+  BACKEND:{
+    flavor:'Archiwista odkłada pióro. Na pieczęci wyryty jest labirynt zależności, który tylko ty widzisz jako strukturę. Budujesz to, czego nikt nie widzi — logikę, kontrakt, przepływ. To jest twoja klątwa i twoje powołanie.',
+    profile:'Twój instynkt prowadzi cię do wnętrza systemu — logiki, struktury, interfejsów i przepływu danych. Implementacja jest dla ciebie rozmową z maszyną, a architektura — jej gramatyką. Słuchasz demonów baz danych, znasz humory pamięci podręcznych, wiesz, gdzie w kanałach API czają się niespodziewane pęknięcia.',
+    role_desc:'Rzeźbiarz Wnętrza Świętych Machin pracuje głęboko pod kamieniem, tam gdzie krążą liczby i żądania, a petent widzi tylko efekt na chłodnej powierzchni ekranu. Interesuje go, czy wszystko ze sobą gada, gdzie rozlewa się odpowiedzialność i co się zawali, jeśli ruszy jedną belką. Jeśli ma wadę, to taką, że czasem wolałby przebudować pół katedry, niż dokleić jeszcze jedną krzywą kaplicę do rozpadającej się ściany.',
+    path:'Backend Engineer → Senior Backend Developer → Tech Lead / Software Architect'
+  },
+  FRONTEND:{
+    flavor:'Pieczęć jest przezroczysta — widać przez nią wszystkie warstwy jednocześnie. Walczysz z przeglądarkami, warstwami widoku i oczekiwaniami, które zmieniają się po każdym spotkaniu.',
+    profile:'Twój instynkt prowadzi cię ku warstwie, którą użytkownik widzi, dotyka i ocenia. Interfejs jest dla ciebie językiem, a spójność wizualna — wartością samą w sobie. Myślisz o spojrzeniu człowieka: gdzie zawiesi wzrok, gdzie się zgubi, co pomyli, jak długo zniesie czekanie, zanim uzna machinę za wrogą.',
+    role_desc:'Tkacz Oblicza i Obliczań stoi bliżej wrót niż piwnic. Myśli o rytmie animacji, układzie przycisków, ale też o wydajności po stronie przeglądarki. Wie, że zbyt ciężka strona potrafi zabić nawet najpiękniejszy rytuał, a jedno źle opisane pole formularza może wywołać więcej klątw niż błąd w bazie. W jego oczach interfejs nie jest dekoracją, tylko mostem.',
+    path:'Frontend Engineer → Senior Frontend → Tech Lead / UX Engineer'
+  },
+  TESTER:{
+    flavor:'Archiwista przybija pieczęć z pewną dozą podejrzliwości. Twoja rola to szukać tego, czego inni nie szukali — i znajdować to, czego woleliby nie znaleźć.',
+    profile:'Twój instynkt to nieufność wobec tego, co „działa". Szukasz przypadków brzegowych, niespójności i scenariuszy, które inni uznali za niemożliwe. Zanim nazwiesz coś skończonym, pytasz: po czym poznamy, że ta runa działa dobrze, a nie tylko pięknie?',
+    role_desc:'Ten, Który Sprawdza, Czy Katedra Naprawdę Stoi, nie wierzy w „działa, bo mi się wydaje". Chodzi po salach, wali w kolumny, sprawdza, czy drzwi prowadzą gdzieś dalej niż w ścianę. Lubi próby całych katedr, nie tylko pojedynczych cegieł. W jego spojrzeniu nie ma złośliwości — jest tylko troska o to, żeby nikomu nie spadł kawałek sufitu na głowę.',
+    path:'QA Manual → Test Automation Engineer → SDET / QA Lead'
+  },
+  SUPPORT:{
+    flavor:'Pieczęć jest podniszczona — widać, że wiele rąk przez nią przeszło. Do twoich uszu trafiają pierwsze westchnienia, przekleństwa i opowieści o tym, jak demon systemu zniszczył komuś poranek.',
+    profile:'Twój instynkt to rozwiązywanie problemów opisanych nieprecyzyjnie przez ludzi, którzy nie rozumieją maszyn. Tłumaczysz w obie strony. Każdą udrękę niesiesz dalej już nie jako krzyk, ale jako pergamin: z odtworzoną ścieżką, śladami w logach, przypisanym kontekstem.',
+    role_desc:'Zwiadowca Udręki krąży między salą petentów a korytarzami machin jak ktoś, kto zna oba języki. Do jego uszu trafiają pierwsze lamenty. Zamiast tylko kiwać ćwiczoną głową, zadaje pytania, rozplątuje opowieści na konkretne kroki. Dla maszyn jest głosem ludzi, dla ludzi — pierwszą tarczą przed chłodem technicznego bełkotu.',
+    path:'IT Support L1 → L2/L3 Specialist → Systems Administrator / IT Manager'
+  },
+  SYSADMIN:{
+    flavor:'Pieczęć jest ciężka, wykonana z czegoś starszego niż reszta dokumentów w archiwum. Serwery mają swoje humory — i tylko ty je znasz.',
+    profile:'Twój instynkt to środowisko — serwery, sieci, konfiguracje, zasoby. Rozumiesz co podtrzymuje cały świat, podczas gdy wszyscy inni tylko z niego korzystają. Restart nie jest czarodziejskim zaklęciem na wszystko, tylko ostatecznością, którą poprzedza zrozumienie, co się naprawdę wydarzyło.',
+    role_desc:'Strażnik Murów, Źródeł i Kluczy schodzi tam, gdzie grzeją się kamienie pamięci i huczą podziemne źródła mocy. Gdy ktoś mówi „nic nie dotykaliśmy, samo się popsuło", on zagląda w kroniki i sprawdza, kto naprawdę poruszył kamień i o której godzinie. Pilnuje, by w razie burzy twierdza w ogóle stała.',
+    path:'SysAdmin → Senior SysAdmin / Cloud Engineer → Platform Engineer / Infrastructure Architect'
+  },
+  DEVOPS:{
+    flavor:'Na pieczęci wyryty jest rurociąg — niekończący się, rozgałęziony, pulsujący. Twoim sukcesem jest cisza. Nikt nie chwali potoków, które po prostu działają.',
+    profile:'Twój instynkt to automatyzacja — jeśli coś robisz ręcznie częściej niż dwa razy, masz problem filozoficzny, nie tylko techniczny. Stawiasz dzwony, które biją zanim kamień pęknie — monitoring, alerty, metryki. Nienawidzisz „magii ręcznej", która działa tylko gdy jeden konkretny mag jest w pokoju.',
+    role_desc:'Mistrz Rytuałów, Które Robią Się Same, nie interesuje się tylko tym, czy coś działa dziś — ważne, czy da się to odtworzyć jutro, na drugiej wieży, przez inne ręce. Zamiast poprawiać każdy zwój osobno, buduje obrzędy: z jednego opisu tworzy wiele identycznych machin. W jego oczach prawdziwa stabilność to nie „mamy jednego guru", tylko „mamy rytuał, który każdy może odprawić".',
+    path:'DevOps Engineer → Senior DevOps / SRE → Platform Engineer / Engineering Manager (Infra)'
+  },
+  SECDEF:{
+    flavor:'Pieczęć jest czarna i bez ornamentów. Widzisz w każdym ruchu sieciowym potencjalny spisek. Zazwyczaj masz rację.',
+    profile:'Twój instynkt to obrona — monitoring, analiza incydentów, reakcja i wyprzedzanie zagrożeń. Patrzysz na każdy system przez pryzmat tego, co może pójść nie tak. Jego pierwszy odruch to zatrzasnąć zasuwy, zanim zacznie się uprzejma rozmowa — nie z paranoi, lecz z dobrze zapamiętanych katastrof.',
+    role_desc:'Żelazny Strażnik Bram stoi tam, gdzie mury stykają się z mgłą, a każdy cień może być zarówno wiatrem, jak i zwiastunem włamania. W jego świecie otwarta brama nie jest stanem domyślnym, tylko rytuałem: imię, pieczęć, ślad w księdze, świadek. Nie boi się być tym, który „psuje wygodę".',
+    path:'Security Analyst → SOC / Blue Team Engineer → Senior Security Engineer / CISO Track'
+  },
+  PENTEST:{
+    flavor:'Archiwista patrzy na ciebie nieco dłużej niż na innych. Twoja praca polega na legalnym włamywaniu się do rzeczy — a potem pisaniu o tym obszernego raportu.',
+    profile:'Twój instynkt to atak — szukasz słabości zanim zrobi to ktoś bez upoważnienia. Myślisz jak włamywacz, działasz jak inżynier. Każdy udany włam opisujesz potem z chirurgiczną precyzją: tędy wszedłem, tu nikt nie patrzył, tu stara pieczęć nadal działa.',
+    role_desc:'Cichy Włamywacz w Służbie Straży wygląda jak ktoś, komu nie do końca można ufać — i słusznie. Nie wystarczy mu zobaczyć mury na mapie — musi po nich przejść nocą, z kradzioną przepustką, sprawdzając, czy da się przecisnąć przez szczelinę w logice. Jego największą bronią jest bezlitosna ciekawość wobec własnych murów.',
+    path:'Junior Pentester → Pentester → Senior Penetration Tester / Red Team Lead'
+  },
+  GRC:{
+    flavor:'Pieczęć jest sformalizowana i trzykrotnie podpisana. Znasz każdy paragraf, który organizacja powinna znać — i z reguły ignoruje.',
+    profile:'Twój instynkt to zgodność — polityki, regulacje, audyty i zarządzanie ryzykiem. Myślisz w języku praw, obowiązków i śladów: kto wiedział, kiedy się dowiedział, jak to zapisano, co trzeba będzie pokazać, gdy ktoś obcy zażąda otwarcia ksiąg.',
+    role_desc:'Prawodawca Pieczęci i Ksiąg nie nosi miecza ani tarczy, ale to jego słowa decydują, czy twierdza przejdzie przez burzę z podniesioną głową. Gdy w murze pojawia się rozdarcie, pyta nie tylko „jak zatkać dziurę?", ale też „komu musimy o tym wyć w określonym czasie i jakie rytuały odprawić po fakcie". Jest sumieniem i pamięcią bractwa.',
+    path:'Compliance Analyst → GRC Specialist → Risk Manager / CISO Track'
+  },
+  PM:{
+    flavor:'Harmonogram jest wyryty na pieczęci — choć plan już dawno przestał odpowiadać rzeczywistości. Zarządzasz projektem, który zarządza tobą.',
+    profile:'Twój instynkt to koordynacja — harmonogram, ryzyko, budżet i ludzie, którzy nie chcą być zarządzani. Trzymasz wszystko razem siłą woli. Gdy przychodzisz przed radę, nie niesiesz bajki o tym, jak „na pewno zdążymy" — niesiesz prawdziwy stan wyprawy, nawet jeśli jest cuchnący.',
+    role_desc:'Mistrz Księgi Drogi siedzi przy stole jak ktoś, kto widział już zbyt wiele niedokończonych opowieści. Pilnuje, by dzieło nie rozrosło się w bezkształtną hydroksiędze, którą czyta się latami i nigdy nie kończy. W jego ustach „nie damy rady" jest zaklęciem ochronnym, nie porażką — pragmatycznym demaskowaniem koszmaru.',
+    path:'Project Coordinator → Project Manager → Senior PM / Program Manager'
+  },
+  SM:{
+    flavor:'Pieczęć ma kształt ceremonii. Strzeżesz rytuałów zwinności, usuwasz przeszkody i tłumaczysz, dlaczego retrospektywa nie jest stratą czasu.',
+    profile:'Twój instynkt to proces — ceremonie, impedimenty i dynamika zespołu. Jesteś lustrem, które pokazuje teamowi jak działa, bez oceniania kto ma rację. Widzisz, kiedy do kręgu wpełzły obce duchy: nieplanowane wrzutki, ciche oczekiwania, niewypowiedziane konflikty.',
+    role_desc:'Strażnik Obrzędów Drużyny stoi nie przy mapie, ale przy ognisku. Pamięta, kiedy drużyna ostatnio miała chwilę, by spojrzeć sobie w oczy. Gdy magia pracy zaczyna się psuć, nie szuka winnego w jednym nazwisku, tylko w pękniętych rytuałach. Jego zaklęcia są miękkie: pytania, pauzy, zmiana formy spotkania.',
+    path:'Scrum Master → Senior SM / Agile Coach → Head of Agile Transformation'
+  },
+  BA:{
+    flavor:'Pieczęć jest dwujęzyczna. Żyjesz między dwoma światami — rozumiany przez żaden z nich, potrzebny przez oba.',
+    profile:'Twój instynkt to tłumaczenie — między biznesem a technologią, między potrzebą a rozwiązaniem. Mieszkasz w wymaganiach i wychodzisz stamtąd tylko na warsztaty. Pytasz „co to ma zmienić?" i nie ruszasz dalej, dopóki nie dostaniesz odpowiedzi, która nie brzmi jak hasło z plakatu.',
+    role_desc:'Tłumacz Zwojów i Intencji stoi z jedną stopą w błocie petentów, z drugą na zimnym kamieniu maszyn. Bierze mgły w dłonie i lepi z nich kształtne zwoje: konkrety, zakresy, priorytety. Jest pierwszy, który bezczelnie pyta: „co to ma zmienić?" i nie rusza dalej, dopóki nie dostanie odpowiedzi.',
+    path:'Junior BA → Business Analyst → Senior BA / Product Analyst'
+  },
+  PO:{
+    flavor:'Pieczęć jest największa ze wszystkich. To ty decydujesz co wejdzie do sprintu, a co będzie czekać. Backlog jest twoim królestwem i twoim obowiązkiem.',
+    profile:'Twój instynkt to priorytet — wizja, roadmapa i wartość. Decydujesz co jest ważne i bierzesz odpowiedzialność za tę decyzję, gdy okaże się błędna. Mówisz: „ta księga nie będzie wszystkim dla wszystkich".',
+    role_desc:'Właściciel Proroctwa siedzi najbliżej krawędzi przepaści, nad którą rozpięta jest księga obietnic. Każda nowa runa, każdy „feature" to ślubowanie. To on trzyma pióro, którym zapisuje „tak", „nie" albo „nie teraz" i wie, że każde słowo niesie konsekwencje. Prawdziwy Właściciel Proroctwa bierze na siebie grzech tego, co nie powstało — po to, by to, co powstanie, miało sens.',
+    path:'Associate PO → Product Owner → Senior PO / Head of Product'
+  },
+  DATAENG:{
+    flavor:'Pieczęć jest pulsująca — dane przepływają przez nią w obu kierunkach. Budujesz drogi, którymi płyną liczby. Bez ciebie pozostałe klasy zakonu działają w ciemności.',
+    profile:'Twój instynkt to przepływ — pipeline\'y, transformacje i jakość danych u źródła. Budujesz infrastrukturę analityczną, nie samą analizę. Dla ciebie każda wartość musi mieć swoje źródło, swoje rury, swoje pęknięcia i zawory.',
+    role_desc:'Architekt Rur i Kamiennych Zwojów schodzi tam, gdzie jest najciemniej: do korytarzy, w których ciągną się potoki danych, ociekające wilgocią starych systemów. Jego dziełem są nie tylko tabele, ale całe rytuały zasilania Wieży: procesje ETL przechodzące o określonych porach jak święta, walidacje odmawiane jak modlitwy ochronne. Bez niego każdy raport jest domkiem z kart ustawionym na błocie.',
+    path:'Data Engineer → Senior Data Engineer → Data Platform Engineer / Data Architect'
+  },
+  DATASCI:{
+    flavor:'Pieczęć miga w rytm hipotez. Widzisz wzorce tam, gdzie inni widzą szum. Statystyka jest twoim językiem, a błąd w danych — twoim wrogiem osobistym.',
+    profile:'Twój instynkt to analiza — modele, eksploracja i interpretacja. Pytasz „dlaczego" zanim powiesz „co" i „ile". Dla ciebie liczby nie są tylko punktami na osi — są śladami decyzji, przyzwyczajeń, zaniedbań i cichych struktur w świecie.',
+    role_desc:'Wróżbita Liczb i Sensu stoi na granicy między zimną geometrią wykresów a miękką, lepką materią ludzkich spraw. Potrafi dobrać miary, które coś znaczą, ułożyć segmenty odpowiadające realnym plemionom świata. Rozumie, że dobra wróżba to nie tylko „model działa na 93%", ale też „wiemy, co zrobimy, gdy się myli".',
+    path:'Data Analyst → Data Scientist → Senior Data Scientist / ML Researcher'
+  },
+  AIML:{
+    flavor:'Archiwista przez chwilę milczy. Wskrzeszasz wzorce, uczysz modele i martwisz się o metryki ewaluacyjne o 2 w nocy.',
+    profile:'Twój instynkt to model — ale model, który musi działać na produkcji. Łączysz inżynierię z uczeniem maszynowym. Wywołujesz demony z danych, uczysz je świata na starych zwojach, wiążesz zaklęciami wersjonowania, monitoringu, strażników wejścia.',
+    role_desc:'Pętacz Demonów Przepowiadających siedzi w komnacie, gdzie słoje z modelami stoją w kręgach, każdy z runami parametrów wyrytymi na szkle. Rozumie różnicę między małym demonem do zabawy w piasku a potworem, którego wypuszcza się do wielkiej hali produkcji. Wie, że demon karmiony złymi danymi nie tylko się myli — szkodzi szybciej, niż człowiek zdąży zamrugać.',
+    path:'ML Engineer → Senior ML Engineer → MLOps / AI Platform Lead'
+  },
+  INTERN:{
+    flavor:'Archiwista przybija pieczęć z adnotacją: INICJACJA NIEUKOŃCZONA. To nie wyrok. To stan przejściowy z zaznaczonym kierunkiem. Archiwum odnotowało twoje przybycie.',
+    profile:'Twoje odpowiedzi wskazują na wyraźną przynależność do obszaru, ale etap inicjacji jeszcze trwa. Ostrożność i pytania są właściwą odpowiedzią na ten etap. Archiwum docenia tych, którzy wiedzą, czego nie wiedzą.',
+    role_desc:'Uczeń z Otwartymi Oczami trafia do Zakonu z mieszanką zachwytu i przerażenia. Na początku najbardziej boi się przyznać, że nie rozumie. Powoli jednak uczy się, że najważniejsze słowa w tej wieży to „dlaczego?", „po co?" i „jak sprawdzimy, że to działa?". Jeśli przetrwa pierwsze miesiące bez utraty ciekawości, stanie się jednym z najbardziej niebezpiecznych rodzajów magów: takim, który pamięta, jak to jest nic nie wiedzieć.',
+    path:'Naucz się jednej rzeczy dobrze, zamiast wielu powierzchownie. Szukaj mentora. Zadawaj pytania, które cię wstydzą — to są zazwyczaj najlepsze pytania.'
+  },
+  FTI:{
+    flavor:'Archiwista odczytuje wyrok bez pośpiechu. Pieczęć jest czerwona, ale wydana bez złości — złość wymagałaby zaskoczenia. Jesteś zjawiskiem dobrze udokumentowanym w aktach archiwum.',
+    profile:'Twoje odpowiedzi wykazały wzorzec pewności siebie nieproporcjonalnej do wyników oraz tendencję do działania przed myśleniem i restartu przed diagnozą. Tam gdzie przechodzi Wieczny Dyletant, zaufanie do całego systemu eroduje.',
+    role_desc:'Full Time Idiot jest przestrogą wyrzeźbioną w marginesach Kodeksu. Rzeźbi szybko, odważnie, ale tak, że tylko on sam wie, co naprawdę wydarzyło się w środku. Rytuały gildii traktuje jak grzeczne sugestie: przeglądy zwojów go męczą, dokumentacja jest dla tych, którzy nie pamiętają, co zrobili. W kronikach pojawiasz się przy wpisach o incydentach „niemożliwych do prześledzenia".',
+    path:'Zatrzymaj się. Przeczytaj dokumentację. Zapytaj co jest na serwerze zanim go restartujesz. Sprawdź co jest na produkcji zanim to deployniesz. „Dokumentacja później" nigdy nie nadchodzi.'
+  },
+  PROFUSER:{
+    flavor:'Archiwista odczytuje wyrok łagodnym tonem, co jest gorsze od surowego. Jesteś po właściwej stronie granicy — po stronie, która używa wszystkiego co tamta strona buduje.',
+    profile:'Twoje odpowiedzi wskazują na profesjonalne funkcjonowanie w środowisku IT bez bezpośredniego udziału w jego tworzeniu. To też jest rola — i bywa cenniejsza niż się wydaje.',
+    role_desc:'Użytkownik Graniczny funkcjonuje między Wieżą a światem petentów. Rozumie narzędzia lepiej niż przeciętny śmiertelnik, ale nie buduje ich sam. W zdrowym zakonie jego intuicja bywa wysłuchana, ale potem zderzona z dowodami i innymi głosami. Product Management lub Business Analysis to naturalny most do głębszego IT.',
+    path:'Product Management lub Business Analysis jako naturalny most do głębszego IT. Albo zostań Power Userem — to też jest wartość i zawód.'
+  }
+};
+
+// ══════════════════════════════════════════════════════════════════
+// LEVEL 1 — 10 pytań
+// ══════════════════════════════════════════════════════════════════
+const L1 = [
+  {
+    label:'PROTOKÓŁ 1 / 10',
+    intro:'Pierwszego dnia w Twierdzy Wieży do Sali Podań wpada pergamin bez posłańca. Drzwi były zamknięte, okna zaklęte, a jednak zwój leży na środku kamiennej posadzki. Pieczęć jest właściwa, ale odciśnięta na lewą stronę. W treści majaczą słowa dawnego języka, którego uczono kiedyś obowiązkowo.',
+    text:'Co robisz?',
+    answers:[
+      {text:'Pochylasz się nad pergaminem i szukasz sprzeczności między znakami, rubrykami i datami — dobre kłamstwo gnije najpierw w najmniejszym szczególe.',maps:'KODEKS'},
+      {text:'Śledzisz drogę, jaką pergamin mógł przebyć przez komnaty, rury pocztowe i cudze ręce — pytasz służbę, strażników, wartowników przy bramie.',maps:'FUNDAMENT'},
+      {text:'Zakładasz rękawice, chwytasz pergamin szczypcami i meldujesz, że coś weszło do zamku, choć nikt nie widział otwartej bramy.',maps:'STRAZ'},
+      {text:'Szukasz tej, której pieczęć widnieje na wosku, i pytasz, czy na pewno to ona wysłała to, co właśnie trzymasz.',maps:'ZGROMADZENIE'},
+      {text:'Rozkazujesz przynieść wszystkie pergaminy z podobnie skrzywioną pieczęcią — wzorzec cudów zwykle oznacza czyjąś wolę.',maps:'WYROCZNIA'}
+    ]
+  },
+  {
+    label:'PROTOKÓŁ 2 / 10',
+    intro:'Spotykasz przedstawicieli dwóch cechów: jednych w płaszczach naszytych runami kodu, drugich w skórzanych fartuchach z podziemi. Stoją nad pękniętym artefaktem — żelazną skrzynią z migającymi symbolami — i od trzech dni kłócą się o to, kto go zepsuł.',
+    text:'Co robisz?',
+    answers:[
+      {text:'Zaczynasz od spojrzenia na sam artefakt: szukasz miejsca, gdzie runy jednego cechu spotykają się z runami drugiego, bo wszelkie nieszczęścia rodzą się tam, gdzie dwa języki próbują udawać, że są jednym.',maps:'KODEKS'},
+      {text:'Idziesz za śladami mocy: sprawdzasz, którędy płynie energia, gdzie zatrzymuje się w rurach i kanałach, w którym punkcie coś przestało płynąć, a zaczęło zgrzytać.',maps:'FUNDAMENT'},
+      {text:'Pytasz, kto miał klucze do skrzyni, kto ostatni przykładał do niej ręce i kto wychodził z tej sali z miną „to na pewno nie ja".',maps:'STRAZ'},
+      {text:'Zwołujesz obu mistrzów do jednej komnaty, sadzasz po przeciwnych stronach stołu i pilnujesz, by najpierw opowiedzieli, co zrobili, a dopiero potem kogo o to oskarżają.',maps:'ZGROMADZENIE'},
+      {text:'Zbierasz opowieści z obu stron, odnotowujesz drobne różnice w ich wersjach i szukasz wzorca, który nie należy do żadnego z nich — bo prawdziwa przyczyna często siedzi obok kłótni, nie w jej środku.',maps:'WYROCZNIA'}
+    ]
+  },
+  {
+    label:'PROTOKÓŁ 3 / 10',
+    intro:'Do bramy Twierdzy podjeżdża kareta z herbem odległego królestwa. Z jej wnętrza wysiada nowa osoba: w zbyt czystej szacie, z pękiem pieczęci i spojrzeniem cielęcia w świątyni dźwigni. Mistrz popycha cię łokciem: „Powiedz mu jedno zdanie, zanim Wieża zrobi to po swojemu."',
+    text:'Co mówisz nowicjuszowi?',
+    answers:[
+      {text:'„Tam leżą stare zwoje, tam próby, a w kącie spis rzeczy, które od miesięcy udają, że nie są zepsute. Najpierw czytaj, potem dopiero pisz nowe zaklęcia."',maps:'KODEKS'},
+      {text:'„Zanim czegokolwiek dotkniesz, upewnij się, czy to sala ćwiczeń, czy żywy mechanizm z podziemi, który budzi się źle, gdy grzebie przy nim obcy."',maps:'FUNDAMENT'},
+      {text:'„Nie ruszaj niczego, czego nie umiesz nazwać, i zmień swoje słowo dostępu, zanim ktoś inny wypisze je sobie na pierścieniu."',maps:'STRAZ'},
+      {text:'„Tu siedzą ludzie, tu leżą sprawy do załatwienia. Przez pierwsze dni twoim obowiązkiem jest pytać bez dumy i słuchać, nawet gdy odpowiedź ci się nie podoba."',maps:'ZGROMADZENIE'},
+      {text:'„Liczby nie kłamią. One tylko mszczą się na tych, którzy pytają je o nie to, co trzeba. Najpierw zrozum, co i po co jest tu w ogóle liczone."',maps:'WYROCZNIA'}
+    ]
+  },
+  {
+    label:'PROTOKÓŁ 4 / 10',
+    intro:'Budzi cię dźwięk, którego w Wieży nie lubi nikt: cisza tam, gdzie powinien być stukot. Mechanizm w zachodnim skrzydle stoi. „Nikt nic nie zmieniał" — mówią głosy. „Nikt nic nie widział" — dodają inne. Za oknem termin wielkiego dzieła nadciąga jak poborca z nożem do listów.',
+    text:'Od czego zaczynasz?',
+    answers:[
+      {text:'Sięgasz po zwoje z ostatnich dni i szukasz miejsca, w którym ktoś przestawił jedną runę, zmienił jeden warunek, dodał jedno niewinne słowo za dużo.',maps:'KODEKS'},
+      {text:'Schodzisz do podziemi mechanizmu, sprawdzając zasilanie, koła, rury mocy i ślady powolnego gnicia — bo świat lubi psuć się od spodu, zanim huknie na górze.',maps:'FUNDAMENT'},
+      {text:'Sprawdzasz pieczęcie, zamki i listę tych, którzy w ogóle mogli tu wejść. Pytasz, czy ktoś obcy nie pojawił się w sali o godzinie, gdy straż zwykle patrzy gdzie indziej.',maps:'STRAZ'},
+      {text:'Zwołujesz wszystkich, którzy mieli z mechanizmem cokolwiek wspólnego: skrybów, zbrojmistrzów, posłańców, i każesz im opowiedzieć, co działo się tu naprawdę.',maps:'ZGROMADZENIE'},
+      {text:'Zaznaczasz na osi czasu chwilę, gdy wszystko stanęło, i patrzysz szerzej: co jeszcze w zamku ruszyło się wtedy choćby o włos, jakby ktoś większy wyciągnął rękę zza horyzontu.',maps:'WYROCZNIA'}
+    ]
+  },
+  {
+    label:'PROTOKÓŁ 5 / 10',
+    intro:'Rada starych mistrzów prowadzi cię na długi korytarz, w którym stoją troje drzwi. Za pierwszymi: tłum petentów z desperacją w głosie. Za drugimi: ciemny labirynt dźwigni, rur i kół zębatych. Za trzecimi: poważni ludzie w płaszczach różnych królestw, czekający aż ktoś wreszcie powie „zrobimy to tak".',
+    text:'Które drzwi wybierasz?',
+    answers:[
+      {text:'Wchodzisz do komnaty petentów — ich cierpienie jest zwykle pierwszym objawem większej choroby czarów i mechanizmów.',maps:'KODEKS'},
+      {text:'Wchodzisz do labiryntu podziemi, w głąb rur i kół — kto nie rozumie fundamentu, ten błąka się tylko po skutkach jak duch po ruinach zamku.',maps:'FUNDAMENT'},
+      {text:'Zatrzymujesz się jeszcze przed progiem i pytasz, kto kazał te drzwi otworzyć, kto pilnuje kluczy i komu najbardziej zależy, by nikt ich nie zamknął.',maps:'STRAZ'},
+      {text:'Idziesz do sali decyzji, siadasz przy długim stole i pytasz każdego z obecnych, czego tak naprawdę chce — bez wypowiedzianych na głos pragnień nic nie ruszy się ani o cal.',maps:'ZGROMADZENIE'},
+      {text:'Zatrzymujesz się w połowie korytarza i szukasz śladów czwartego przejścia: ukrytej klapy, miejsca, w którym rzeczywista przyczyna wyślizgnęła się z trzech oczywistych opowieści.',maps:'WYROCZNIA'}
+    ]
+  },
+  {
+    label:'PROTOKÓŁ 6 / 10',
+    intro:'Pewnego dnia Twierdza Wieży zdaje się o tobie nie pamiętać. Masz godzinę, w której żaden posłaniec nie stuka w drzwi, żaden żołnierz nie krzyczy, że demon znów mówi nie to, co trzeba. Pergaminy leżą płasko.',
+    text:'Co robisz z tą godziną?',
+    answers:[
+      {text:'Wracasz do starego zwoju, który od miesięcy jęczy cicho w kącie półki — poprawiasz jego pokręconą logikę, bo wiesz, że w dzień burzy ktoś na pewno spróbuje go użyć.',maps:'KODEKS'},
+      {text:'Schodzisz samotnie do podziemi, nasłuchując, czy jakieś koło nie zgrzyta zbyt głośno, czy jakaś rura nie cieknie.',maps:'FUNDAMENT'},
+      {text:'Przeglądasz księgę wejść i wyjść, ślady na zamkowych murach, dawne próby otwarcia zakazanych drzwi — w ciszy najlepiej widać włamania, które prawie się udały.',maps:'STRAZ'},
+      {text:'Odnajdujesz ludzi, których rozmowy zawsze odkładano „na potem", i wreszcie spisujesz ustalenia, zanim staną się legendą.',maps:'ZGROMADZENIE'},
+      {text:'Wychodzisz na najwyższy balkon Wieży z kilkoma starymi raportami i próbujesz zrozumieć, o jakie pytanie proszą cię od dawna.',maps:'WYROCZNIA'}
+    ]
+  },
+  {
+    label:'PROTOKÓŁ 7 / 10',
+    intro:'W piątkowy zmierzch ktoś wsunie pod twoje drzwi cienki pergamin. Na nim tylko jedno zdanie: „Mechanizm w wschodniej wieży zachowuje się inaczej w poniedziałki przed świtem." Pieczęć jest prawdziwa, atrament świeży, a brak szczegółów — podejrzanie gęsty.',
+    text:'Jak odpowiadasz na ten omen?',
+    answers:[
+      {text:'Odpisujesz, prosząc o konkret: przykłady, liczby, opisy — bez ciał zbrodni nawet najbardziej dramatyczne zdanie jest tylko poezją wymalowaną na marginesie.',maps:'KODEKS'},
+      {text:'Zaznaczasz w kalendarzu nieludzką godzinę i sprawdzasz, jakie rytuały odpalają się wtedy w wieży: kopie, przebudzenia golemów, otwieranie mostów dla demonów kurierów.',maps:'FUNDAMENT'},
+      {text:'Pytasz, czy „inaczej" znaczy „niebezpiecznie": czy o tej porze coś dostaje dostęp, którego nie powinno mieć, albo prześlizguje się tam, gdzie normalnie stoją straże.',maps:'STRAZ'},
+      {text:'Odnajdujesz autora zdania i umawiasz się z nim na poniedziałek przed świtem przy samym mechanizmie — chcesz widzieć jego strach i jego definicję słowa „inaczej".',maps:'ZGROMADZENIE'},
+      {text:'Przygotowujesz zasadzki z liczb: ustawiasz straż złożoną z pomiarów i zapisów, by sam wzorzec zachowania mechanizmu wyszedł z mroku i dał się narysować na pergaminie.',maps:'WYROCZNIA'}
+    ]
+  },
+  {
+    label:'PROTOKÓŁ 8 / 10',
+    intro:'Stojąc przy mechanizmie wschodniej wieży, zauważasz coś, czego nie było w żadnym raporcie. W bocznej niszy rośnie liczba. Nie skacze, nie wariuje — po prostu z każdym tygodniem jest o dwa małe „cienie" większa. Nikt nie pamięta, skąd się wzięła.',
+    text:'Jak reagujesz na ten powolny przyrost?',
+    answers:[
+      {text:'Wracasz do pergaminów sprzed czterech księżyców i szukasz chwili, gdy ktoś dorysował jedną linijkę rachunku, zmienił definicję, odjął coś z jednego miejsca i dodał gdzie indziej.',maps:'KODEKS'},
+      {text:'Schodzisz do magazynów i piwnic, szukając, czy gdzieś nie ubywa zasobów — miejsca na kamiennych dyskach, mocy w kryształach, siły w kołach.',maps:'FUNDAMENT'},
+      {text:'Zastanawiasz się, czy ten wzrost nie jest śladem czegoś, co przechodzi przez mury, kiedy nikt nie patrzy — jak kontrabanda albo obcy byt policzony razem z mieszkańcami.',maps:'STRAZ'},
+      {text:'Idziesz do tych, których świat może zostać zjedzony przez tę liczbę. Pokazujesz prostą linię na pergaminie i mówisz: „To rośnie. Czy pozwalamy jej rosnąć dalej?"',maps:'ZGROMADZENIE'},
+      {text:'Rysujesz tę linię dalej, dużo dalej. Zaznaczasz punkt, w którym sięgnie murów, dzień, w którym zje wszystkie wolne zasoby. Patrzysz na te daty i zastanawiasz się, kto chciałby je poznać.',maps:'WYROCZNIA'}
+    ]
+  },
+  {
+    label:'PROTOKÓŁ 9 / 10',
+    intro:'Zamek zarządza naradę w Sali Długiego Stołu. Dzieło opisane na zwoju jest na trzy tygodnie. Termin próby ma nadejść za siedem dni. Nikt nie chce zmniejszyć dzieła. Nikt nie chce przesunąć dnia próby. Wszyscy patrzą po sobie tak, jak patrzy się na most, po którym trzeba przejść, choć wyraźnie brakuje kilku desek.',
+    text:'Jak próbujesz ocalić to, co się da?',
+    answers:[
+      {text:'Bierzesz pergamin i ostrym piórem obcinasz z niego wszystkie ozdobne dopiski i życzeniowe dodatki; wyznaczasz najmniejszy kształt dzieła, który nadal ma sens.',maps:'KODEKS'},
+      {text:'Zanim ktokolwiek zacznie dzielić pracę, idziesz do podziemi — sprawdzasz, czy mury, rury i fundamenty w ogóle są w stanie znieść takie tempo bez pęknięcia.',maps:'FUNDAMENT'},
+      {text:'Siadasz nieco z boku i spisujesz wszystkie ciche klątwy, które widzisz: demon, który może oszaleć, golem, który może odmówić posłuszeństwa, człowiek, który najpewniej zniknie, gdy coś pójdzie źle.',maps:'STRAZ'},
+      {text:'Wstajesz od stołu i mówisz głośno: „Wybierzmy, co zostaje, a z czego rezygnujemy — i zapiszmy imię tego, kto poniesie za to odpowiedzialność."',maps:'ZGROMADZENIE'},
+      {text:'Rozkładasz dzieło na kawałki: patrzysz, co pożera czas, co ludzi, co demony. Szukasz wąskiego gardła, które — jeśli je zmienisz — sprawi, że niemożliwe stanie się po prostu bardzo trudne.',maps:'WYROCZNIA'}
+    ]
+  },
+  {
+    label:'PROTOKÓŁ 10 / 10',
+    intro:'Dzieło dobiega końca. Masz ostatnie pięć minut, zanim wszystko trafi do Archiwum. Na ścianach zbroje patrzą pustymi oczami. Wydaje ci się, że mury lekko się pochylają, czekając, co zrobisz.',
+    text:'Co robisz przed zamknięciem księgi?',
+    answers:[
+      {text:'Rozwijasz pierwotny pergamin z planem i porównujesz go z tym, co naprawdę zostało odprawione: sprawdzasz, czy rytuał, który wysyłacie w świat, choć trochę przypomina to, co obiecano w słowach i pieczęciach.',maps:'KODEKS'},
+      {text:'Idziesz jeszcze raz przez sale mechanizmów: dotykasz chłodnych kamieni, nasłuchujesz kół i rur, upewniasz się, że żaden golem nie został przypadkiem obudzony „na zawsze".',maps:'FUNDAMENT'},
+      {text:'Przeglądasz listę tych, którzy mieli dostęp do odczytów: sprawdzasz, gdzie poszły kopie, kto może mieć fragment tej wiedzy, a nie powinien.',maps:'STRAZ'},
+      {text:'Zwołujesz jeszcze raz ludzi i krótko mówisz im, co się tu stało, co się udało, czego nie — zanim zdążą dorobić sobie wygodniejsze wersje.',maps:'ZGROMADZENIE'},
+      {text:'Wyciągasz dawne kroniki z podobnych rytuałów i przykładasz do nich świeże odczyty. Zaznaczasz miejsca, gdzie świat skręcił choćby o milimetr — właśnie tam przyszłość będzie się o ciebie upominać.',maps:'WYROCZNIA'}
+    ]
+  }
+];
+
+// ══════════════════════════════════════════════════════════════════
+// LEVEL 2 — 10 pytań × 5 kategorii = 50 pytań
+// ══════════════════════════════════════════════════════════════════
+const L2 = {
+
+KODEKS:[
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 1 / 10',intro:'Po pierwszym roku w Wieży zostajesz dopuszczony do pracowni Gildii Konstruktorów. Pewnego popołudnia przychodzi petent z pognieconym pergaminem: „Wynik wróżby bywa błędny — nie zawsze. Tylko czasem, gdy gwiazdy są w półcieniu." Testujesz demona w swojej sali; przy tych samych znakach odpowiada poprawnie. Błąd nie chce się odtworzyć.',
+  text:'Co robisz?',
+  answers:[
+    {text:'Zakopujesz się w konstrukcji wróżby: szukasz kapryśnego elementu, który zmienia kształt w zależności od kolejności znaków, chwili wywołania albo drobnej różnicy w tym, jak pytanie trafia do demona.',maps:'BACKEND'},
+    {text:'Zostawiasz demona w spokoju i idziesz obejrzeć, jak jego słowa pokazują się w salach petentów: może sama wróżba jest czysta, a dopiero obraz lub lustro kaleczy to, co demon mówi.',maps:'FRONTEND'},
+    {text:'Rysujesz dwanaście, dwadzieścia, może trzydzieści prób z różnymi znakami wejściowymi — zmieniasz po jednym szczególe, szukając tego przypadku brzegowego, którego nawet gwiazdy nie przewidziały.',maps:'TESTER'},
+    {text:'Idziesz do mistrza i pytasz, co w jego ustach znaczy „czasem": prosisz, by pozwolił ci siedzieć obok, gdy błąd znów się objawi w prawdziwej sali wróżb.',maps:'INTERN'},
+    {text:'Odkładasz skargę na stos ze wzmianką „Nie powtórzył się w warunkach pracowni" i czekasz, aż petent wróci z tym samym lamentem — tym razem głośniej.',maps:'FTI'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 2 / 10',intro:'Arcymistrz kładzie przed tobą pergamin z cienkim szkicem — zaledwie konturem nowej runy. „To znak, który ma otwierać drogi w połowie drogi" — mówi niejasno. „Dwie pełnie. Potem księżniczka z północnych marchii będzie chciała zobaczyć, jak działa." Nie ma szczegółów kształtu ani listy ograniczeń.',
+  text:'Od czego zaczynasz?',
+  answers:[
+    {text:'Zamykasz oczy na mgliste słowa i zaczynasz od wnętrza runy: rozpisujesz, co ma robić krok po kroku, jakie ścieżki poprowadzi, gdzie może się rozgałęzić. Rysunek na kamieniu przyjdzie później.',maps:'BACKEND'},
+    {text:'Siadasz przy oknie i próbujesz zobaczyć tę runę oczami księżniczki: jak ma wyglądać pod jej palcami, jak poprowadzi jej wzrok, gdzie ma być lekka, a gdzie groźna.',maps:'FRONTEND'},
+    {text:'Zadajesz pierwsze, niewdzięczne pytanie: „Po czym poznamy, że ta runa działa dobrze, a nie tylko pięknie?" Zanim postawisz pierwszy znak, chcesz mieć miary i próby.',maps:'TESTER'},
+    {text:'Spisujesz na osobnym zwoju wszystkie swoje wątpliwości: co jest niejasne, czego brakuje. Niesiesz ten zwój z powrotem do mistrza, prosząc, by doprecyzował, zanim wyryjesz coś, czego nie da się łatwo zetrzeć.',maps:'INTERN'},
+    {text:'Odkładasz wątpliwości do szuflady, ostrzysz rylec i zaczynasz rzeźbić runę od razu — przekonany, że zrozumienie przyjdzie po drodze, a co nie zadziała, to „poprawi się później".',maps:'FTI'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 3 / 10',intro:'Mistrz kładzie przed tobą zwój ucznia. Runy lśnią równym blaskiem, próby przeszedł, demony nie zgłaszają sprzeciwu. „Spójrz — mówi mistrz. — Działa. Ale jeśli zostawimy to takie, jakie jest, za trzy księżyce cała ta konstrukcja zamieni się w labirynt bez wyjścia. Czy to widzisz?"',
+  text:'Co robisz?',
+  answers:[
+    {text:'Zostawiasz na marginesach znaki ostrzegawcze i szkicujesz nowy kształt całej budowli: proponujesz uproszczenia, rozcięcia, a każdą zmianę uzasadniasz cieniem przyszłej klęski, którą już widzisz w głowie.',maps:'BACKEND'},
+    {text:'Przykładasz ten zwój do innych, które już działają w zamku: sprawdzasz, czy nowa runa nie kłóci się z dawnymi wzorami i czy nie rodzi widmowych odchyleń w tym, jak wróżby ukazują się oczom proszących.',maps:'FRONTEND'},
+    {text:'Zapisujesz nie to, co działa, ale czego w próbach zabrakło: skrajne przypadki, dziwne wartości, ostre zakręty ścieżek, których nikt nie sprawdził. Runy świecą dziś, bo nikt nie uderzył w ich słabe granice.',maps:'TESTER'},
+    {text:'Przyjmujesz zwój, bo świeci, próby jakoś przeszedł, a ty nie masz pewności, czy twój cień wątpliwości ma prawo istnieć przy tak zadowolonej minie autora.',maps:'INTERN'},
+    {text:'Przykładasz pieczęć bez zaglądania głębiej — „Skoro próby przeszły, to musi być godne miejsca w mechanizmie."',maps:'FTI'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 4 / 10',intro:'Do pracowni wpada zadyszany posłaniec ze świętej sali wróżb. „Mechanizm przestał odpowiadać — petenci czekają, demon milczy, obrazy stoją w miejscu." Wiesz, że jedną z ostatnich rąk, które dotykały jego run, była twoja.',
+  text:'Co robisz?',
+  answers:[
+    {text:'Rzucasz wszystko i biegniesz do świętej sali, szukając ostatniej runy, którą naznaczyła twoja ręka; sprawdzasz każdy znak po kolei, jakbyś przesłuchiwał własne myśli.',maps:'BACKEND'},
+    {text:'Zanim dotkniesz run demona, stajesz przy ścianach, na których ukazują się jego odpowiedzi: patrzysz, czy obrazy nie zastygły same z siebie, choć mechanizm w środku wciąż próbuje mówić.',maps:'FRONTEND'},
+    {text:'Przypominasz sobie wszystkie drobne niepokoje z ostatnich dni: opóźnione odpowiedzi, przekrzywione symbole. Szukasz w nich omenów milczenia i splatasz je z obecną ciszą.',maps:'TESTER'},
+    {text:'Zatrzymujesz pierwszego mistrza, którego spotkasz po drodze, i pytasz co masz czynić: czy ktoś już stoi przy milczącym demonie, czy masz biec, czy słuchać rozkazów.',maps:'INTERN'},
+    {text:'Podchodzisz prosto do serca mechanizmu i potrząsasz nim zdecydowanie, bo zwykle budzi go dotyk; nie zostawiasz po tym żadnych śladów i nie zaprzątasz sobie głowy tym, dlaczego w ogóle zasnął.',maps:'FTI'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 5 / 10',intro:'Po kilku nieprzespanych nocach demon znów mówi, ale robi to jak ktoś, komu coś uwiera w gardle. W podłodze odsłonięto stary zwój — taki, który pamięta poprzednią dynastię. Każda nowa runa oparta na tym rdzeniu trwa dwa księżyce dłużej, ciągnąc za sobą ogon zależności.',
+  text:'Co radzisz arcymistrzowi?',
+  answers:[
+    {text:'Proponujesz powolne oczyszczanie rdzenia: przy każdej następnej runie odcinać z niego mały kawałek, licząc ciężar każdej operacji, tak by nie zawalić całej budowli jednym ruchem.',maps:'BACKEND'},
+    {text:'Wskazujesz, że zgniły rdzeń psuje też to, co widzą ludzie: obrazy oparte na jego znakach mogą rodzić widma — wyniki tak opóźnione, że nikt nie dostrzeże, kiedy przestały mieć sens.',maps:'FRONTEND'},
+    {text:'Proponujesz ustanowienie prób strażniczych: przed każdym użyciem tej części mechanizmu uruchamiać mały rytuał testowy, by zobaczyć, co pęknie przy następnym kroku.',maps:'TESTER'},
+    {text:'Mówisz tylko, że „coś trzeba uczynić", przyznajesz, że czujesz zgniły zapach w konstrukcji, ale nie umiesz jeszcze nazwać kształtu dzieła, które miałoby to naprawić.',maps:'INTERN'},
+    {text:'Wzruszasz ramionami i mówisz, że „zawsze tak rosło" — że dłuższe trwanie to może po prostu znak potęgi, a nie choroby, i najlepiej niczego nie ruszać.',maps:'FTI'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 6 / 10',intro:'Wieść rozchodzi się po Wieży. W pracowni zatrzymuje cię nowicjusz z atramentem na rękawach. „Czego mam szukać w księgach? Znam litery, czytam zaklęcia, ale nie wiem, od czego zacząć, jeśli chcę kiedyś dotykać takich mechanizmów."',
+  text:'Co mu odpowiadasz?',
+  answers:[
+    {text:'„Najpierw naucz się rzeźbić konstrukcje od środka: jak rosną, jak się rozgałęziają, jak jeden znak wpływa na drugi. Bez tego każda runa będzie tylko ozdobą na ścianie."',maps:'BACKEND'},
+    {text:'„Szukaj ksiąg o widmach i liniach: jak prowadzić oczy innych po obrazie, jak sprawić, by to, co złożone, wyglądało prosto i nie straszyło tych, którzy nie znają run."',maps:'FRONTEND'},
+    {text:'„Zacznij od prób, nie od rzeźbienia. Naucz się wymyślać sytuacje, w których runa powinna pękać — to zmieni twój wzrok na wszystko, co będziesz tworzyć."',maps:'TESTER'},
+    {text:'„Sam jeszcze szukam" — mówisz — „Może lepiej zapytać arcymistrza, zanim oboje zagubimy się w złych tomach."',maps:'INTERN'},
+    {text:'„Weź pierwsze lepsze stare zwoje ze stosu — tam jest wszystko. Ja tak zrobiłem i jakoś żyję."',maps:'FTI'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 7 / 10',intro:'Masz dwa sposoby, by ujarzmić ten sam cień błędu. Pierwszy jest prosty: kilka run, które nawet zmęczony skryba zrozumie. Drugi jest elegancki, wydajny, lecz tak zawiły, że obcym oczom będzie przypominać zaklęcie przywołujące małego boga chaosu. Oba działają i przechodzą próby.',
+  text:'Co wybierasz?',
+  answers:[
+    {text:'Wybierasz prostsze rozwiązanie: „Zwój, który każdy potrafi spalić i napisać od nowa, jest lepszy niż zwój, którego nikt poza tobą nie pojmie."',maps:'BACKEND'},
+    {text:'Wybierasz czyste rozwiązanie: widma i ścieżki muszą być tak piękne, jak to możliwe, bo to jedyna twarz, jaką mechanizm pokaże światu — nawet jeśli zrozumieją je nieliczni.',maps:'FRONTEND'},
+    {text:'Pytasz sam siebie: „Które łatwiej będzie poddać próbom?" To staje się twoją miarą — wybierasz ten sposób, przy którym łatwiej udowodnić, że trwa, gdy świat zacznie się chwiać.',maps:'TESTER'},
+    {text:'Wybierasz prostsze rozwiązanie, bo przy czystym czujesz niejasny niepokój i nie ufasz własnej zdolności do wyjaśnienia go komuś innemu.',maps:'INTERN'},
+    {text:'Wybierasz czyste rozwiązanie i nie zostawiasz żadnego słowa wyjaśnienia — „Kto będzie wystarczająco mądry, sam zrozumie."',maps:'FTI'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 8 / 10',intro:'Arcymistrz zjawia się w twojej pracowni bez zapowiedzi. Siada ciężko przy twoim stole. „Uczyń go płynniejszym" — mówi. Nie ma miar, nie ma liczb, żadnych „o ile" ani „do kiedy". Tylko to jedno słowo.',
+  text:'Od czego zaczynasz?',
+  answers:[
+    {text:'Pytasz, gdzie dokładnie płynność przestaje istnieć: w którym momencie mechanizm się zacina, jak długo każą czekać demony, które runy robią z jednej prostej ścieżki dziesięć zbędnych zakrętów.',maps:'BACKEND'},
+    {text:'Zastanawiasz się, czy opóźnienie nie mieszka w samym obrazie: może demon mówi szybko, ale obrazy zmieniają się wolno i to tam grzęźnie czas.',maps:'FRONTEND'},
+    {text:'Pytasz o dawne próby płynności: czy ktoś kiedykolwiek mierzył, ile trwa cały rytuał, gdzie pęka nić cierpliwości petenta, przy którym etapie demon zaczyna się mylić częściej.',maps:'TESTER'},
+    {text:'Pytasz arcymistrza, od czego on sam by zaczął, bo słowo „płynniejszy" jest dla ciebie na razie bardziej mgłą niż wskazówką.',maps:'INTERN'},
+    {text:'Zaczynasz dodawać skróty i cienie wszędzie, gdzie tylko się da: skracasz ścieżki, zagęszczasz runy, wierząc, że „mniej znaków, więcej mocy" zawsze czyni rzeczy szybszymi.',maps:'FTI'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 9 / 10',intro:'Zostajesz wezwany na małą radę konstruktorów. Rozmowa toczy się o tym, co poszło źle w starych dziełach, aż w końcu jedna z mistrzyń odwraca się do ciebie: „Młody, powiedz: jak w twojej pracowni podchodzicie do prób? Jakie zwyczaje uważasz za warte obrony?"',
+  text:'Co mówisz?',
+  answers:[
+    {text:'„Najcenniejsze są próby całego mechanizmu, nie tylko pojedynczych run. Bo znak może być poprawny, a konstrukcja z nich zbudowana — zupełnie chora. Trzeba widzieć, jak to wszystko działa razem."',maps:'BACKEND'},
+    {text:'„Nie wystarczy próbować samych obliczeń. Trzeba też próbować oblicza — całego obrazu i jego cieni. Zmiana sprawiająca, że wróżba jest niezrozumiała, to dla proszącego taki sam błąd jak zła liczba."',maps:'FRONTEND'},
+    {text:'„Chciałbym, żebyśmy zaczynali od ustalenia, co w ogóle znaczy „gotowe". Bez jasnych granic każda próba staje się tylko losowym szeptem."',maps:'TESTER'},
+    {text:'„Czuję, że powinniśmy mieć więcej prób — ale nie umiem jeszcze tego ubrać w słowa, które nie zabrzmią jak oskarżenie wobec tych, którzy rzeźbią szybciej niż ja."',maps:'INTERN'},
+    {text:'„Próby spowalniają rzeźbę — gdybyśmy mniej sprawdzali, więcej rzeczy już by działało. Lepiej robić, niż się w kółko zastanawiać."',maps:'FTI'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 10 / 10',intro:'Święty mechanizm pęcznieje — każde nowe zaklęcie, każda łata sprawia, że jego wnętrze przypomina rozrastające się miasto niż planowaną konstrukcję. Na radzie pada słowo, którego wszyscy się bali: „rozbijmy go". Podzielić mechanizm na mniejsze, samodzielne fragmenty z własnymi kręgami odpowiedzialności.',
+  text:'Jak reagujesz na tę propozycję?',
+  answers:[
+    {text:'Pytasz najpierw o granice odpowiedzialności: „Który krąg za co będzie odpowiadał? Jak upewnimy się, że gdy jeden fragment zawiedzie, reszta nie runie razem z nim?" Chcesz zrozumieć przepływ żądań i winy, zanim pierwsza linia run zostanie przecięta.',maps:'BACKEND'},
+    {text:'Myślisz o tym, jak ten podział zobaczą ci, którzy przychodzą do sali: „Czy dla proszącego nie stanie się to labiryntem? Czy po rozbiciu będzie widać, do którego fragmentu się zwrócić?"',maps:'FRONTEND'},
+    {text:'Zastanawiasz się, jak będziesz teraz próbował: „Czy będziemy umieli udowodnić, że każdy fragment działa sam z siebie, a potem że wszyscy razem tworzą wciąż jedno sensowne dzieło?"',maps:'TESTER'},
+    {text:'Myślisz głównie o uldze: „Mniejsze fragmenty łatwiej ogarnąć. Byle tylko ktoś inny ustalił zasady, a ja nauczę się ich po drodze."',maps:'INTERN'},
+    {text:'Czujesz przede wszystkim ekscytację: „Im bardziej rozdrobnimy, tym więcej będzie można rzeźbić po kawałku!" Nie pytasz jeszcze, kto będzie pilnował spójności całości.',maps:'FTI'}
+  ]}
+],
+
+FUNDAMENT:[
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 1 / 10',intro:'Pierwszy raz schodzisz sam do sali zgłoszeń. Do twojego stołu podchodzi petent w wyblakłej szacie i kładzie przed tobą krótki zwój: jedno zdanie, kilka koślawych znaków.',
+  text:'"Światło nie dociera." Nic więcej. Jak reagujesz?',
+  answers:[
+    {text:'Odpisujesz spokojnie z pytaniami o kształt błędu: gdzie miało się pojawić światło, co dokładnie uczynił przedtem, czy miga, czy nie rodzi się wcale; prosisz o obraz tego, co widzi.',maps:'SUPPORT'},
+    {text:'Zostawiasz zwój na biurku, schodzisz schodami w dół i sprawdzasz zapisy głównego źródła oraz ścieżek, którymi płynie blask — może wada rodzi się w samym sercu, nim jeszcze dotrze do petenta.',maps:'SYSADMIN'},
+    {text:'Otwierasz księgę śladów i patrzysz na znaki ostatnich zmian: nowe runy, poprawki, łaty sprzed paru dni — może jedna kreska przestawiła przewody tak, że światło błądzi po drodze.',maps:'DEVOPS'},
+    {text:'Podnosisz głowę znad zwoju i pytasz najbliższego mistrza: „Czy u ciebie też zgasło?" Jeśli u niego świeci, wpisujesz skargę do księgi i czekasz na dalsze polecenia.',maps:'INTERN'},
+    {text:'Idziesz prosto do podziemi i wstrząsasz głównym źródłem — poprzednio zadziałało, więc może i tym razem wszystko „samo się naprawi". Nie sprawdzasz, co na nim stoi.',maps:'FTI'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 2 / 10',intro:'Na twój stół ląduje kolejny zwój. „Mechanizm wczoraj mrugał. Dziś zamilkł." Pod spodem dopisek: „Wszyscy przysięgają, że nic nie dotykali." Petenci już szemrają przy drzwiach.',
+  text:'Od czego zaczynasz?',
+  answers:[
+    {text:'Zbierasz od posłańca dokładny opis objawów: kiedy zaczęło mrugać, przy którym obrzędzie, czy zamilkł nagle, czy gasł stopniowo.',maps:'SUPPORT'},
+    {text:'Idziesz do sali zapisów i sprawdzasz ślady z ostatniej doby: porównujesz kształt mechanizmu z dawną kopią sprzed dni, gdy działał bez wahania — wiesz, że „nic nie ruszali" zwykle oznacza „nikt nie pamięta, co zmienił".',maps:'SYSADMIN'},
+    {text:'Przeglądasz księgę rytuałów budzenia mechanizmu: nocne przeglądy, automatyczne obrzędy — może w ciszy ktoś przestawił jeden znak albo opóźnił jeden z zaplanowanych kroków.',maps:'DEVOPS'},
+    {text:'Obchodzisz salę i pytasz wszystkich po kolei, czy na pewno niczego nie dotykali, zapisując ich słowa niemal dosłownie. Potem siadasz przy stole i czekasz na dalsze polecenia.',maps:'INTERN'},
+    {text:'Patrzysz na zwój, wzruszasz ramionami i mówisz: „U mnie mruga." Zamykasz skargę w księdze jako „nieodtwarzalne zakłócenie" i wracasz do własnych zadań.',maps:'FTI'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 3 / 10',intro:'Wieczorem przybiega posłaniec z nowym zwojem. Ktoś prosi o wejście do świętego archiwum: „Tylko na chwilę, żeby spojrzeć na jeden zwój." Wiesz, że za drzwiami stoją kamienne straże, a galaretowate mózgi pamięci widzą każdy dotyk.',
+  text:'Jak reagujesz na tę prośbę?',
+  answers:[
+    {text:'Pytasz, jaki dokładnie zwój chce obejrzeć: proponujesz, że sam wejdziesz do archiwum, odczytasz potrzebny fragment i przyniesiesz mu wynik, zamiast wpuszczać go wprost do środka.',maps:'SUPPORT'},
+    {text:'Odmawiasz wejścia dla petenta i proponujesz tylko odczyt przez strażnicę: dostęp będzie jak najwęższy — zgodny z zasadą, że do świętych zbiorów lepiej podchodzić z daleka.',maps:'SYSADMIN'},
+    {text:'Zanim odpowiesz, sprawdzasz, czy to, czego potrzebuje, da się wywołać przez bezpieczny rytuał: może nocne galarety same wyciągną potrzebne dane nową, wąską ścieżką.',maps:'DEVOPS'},
+    {text:'Wprawia cię to w zakłopotanie. W końcu przepuszczasz go, bo nie chcesz wszczynać sporu — i liczysz, że straż zanotuje, jeśli stanie się coś złego.',maps:'INTERN'},
+    {text:'Otwierasz drzwi archiwum szerzej, niż to konieczne: „Jak tylko na chwilę, to wejdź, obejrzyj co trzeba." Nie myślisz o tym, co pamiętliwe galaretowate mózgi zrobią z tym faktem.',maps:'FTI'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 4 / 10',intro:'Stoisz na galerii nad salą rytualną. Rzeźbiarze form pracują po obu stronach: „katedra próbna" i „święta katedra". Na pierwszy rzut oka wszystko wygląda tak samo, ale w trzech miejscach runy układają się trochę inaczej. Rzeźbiarze machają ręką: „Drobiazgi, nic, czym trzeba się przejmować."',
+  text:'Co robisz z tym odkryciem?',
+  answers:[
+    {text:'Zapisujesz dokładnie wszystkie trzy różnice i wracasz do rzeźbiarzy: przypominasz im, że to ty będziesz tłumaczył petentom, czemu w próbnej katedrze drzwi się zamykały, a w prawdziwej zostają uchylone.',maps:'SUPPORT'},
+    {text:'Wyrównujesz formy: usuwasz różnice albo opisujesz je w księgach tak precyzyjnie, że jeśli kiedyś dojdzie do nieszczęścia, będzie od razu wiadomo, co i gdzie było inne w próbie niż w świętej sali.',maps:'SYSADMIN'},
+    {text:'Zaczynasz tworzyć prosty rytuał, który przy każdym większym dotknięciu mechanizmu porówna próbę ze świętą formą i nie pozwoli, by rozjechały się więcej niż o jedną kreskę.',maps:'DEVOPS'},
+    {text:'Mówisz tylko: „Skoro rzeźbiarze twierdzą, że dobrze, to pewnie dobrze" i odkładasz zwoje na stos, licząc, że jeśli problem się pojawi, ktoś mądrzejszy znajdzie słowa, by go nazwać.',maps:'INTERN'},
+    {text:'Machasz ręką razem z nimi: „Forma to forma, próba to próba. Jak coś naprawdę pęknie w świętej katedrze, wtedy zobaczymy." Nie wpisujesz różnic do żadnej księgi.',maps:'FTI'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 5 / 10',intro:'W środku nocy wyrywa cię ze snu dzwon alarmowy. Mechanizm, który zwykle odpowiada jak błysk, szepcze teraz dopiero po czternastu oddechach. Wszystkie runy w wieży statusu jarzą się równą zielenią. Na zwoju alarmowym: „Opóźnienie odpowiedzi. Nikt nic nie zmieniał."',
+  text:'Jak reagujesz?',
+  answers:[
+    {text:'Budzisz właściwego strażnika tej części twierdzy, przekazujesz pełny obraz: opóźnienia, czas pierwszego alarmu, zachowanie nocnych galaret; zostajesz w gotowości, ale nie dotykasz rdzenia bez jego zgody.',maps:'SUPPORT'},
+    {text:'Wchodzisz w głąb mechanizmu: mierzysz jego „oddech" — przepływ mocy, zajętość kamiennych pamięci, szukasz wąskiego gardła, które dławi odpowiedź, choć wszystkie lampki udają, że jest dobrze.',maps:'SYSADMIN'},
+    {text:'Otwierasz księgę rytuałów tego dzwonu i sprawdzasz dawny wzorzec: jakie opóźnienia już widziano, co je wtedy powodowało, czy była ostatnio zmiana w sposobie, w jaki nocne mózgi obchodzą się z tym mechanizmem.',maps:'DEVOPS'},
+    {text:'Piszesz do mistrza jednym, krótkim zwojem: „Dzwon bije, mechanizm zwalnia — co czynić?" Potem siedzisz na łóżku w półśnie, czekając na instrukcje.',maps:'INTERN'},
+    {text:'Wyłączasz dzwon, żeby przestał wyć, wpisujesz w księdze: „Alarm nocny, zignorowano, rano do sprawdzenia" i kładziesz się z powrotem spać.',maps:'FTI'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 6 / 10',intro:'Od kilku tygodni widzisz to samo: kolejka do bram rośnie szybciej niż ktokolwiek planował. Kamienne liczniki pokazują, że za sześć księżyców obecna twierdza zwyczajnie nie wytrzyma naporu. Mimo to w księgach decyzji jest cisza.',
+  text:'Co robisz z tą wiedzą?',
+  answers:[
+    {text:'Spisujesz na pergaminie, jak wygląda napór w różnych porach dnia, jak często bramy się korkują; z tym opisem idziesz do decydentów i pytasz wprost, kto weźmie na siebie decyzję o wzmocnieniu murów.',maps:'SUPPORT'},
+    {text:'Mierzysz dokładnie obciążenie bram, szkicujesz plan ich poszerzenia; zanim ktokolwiek zapyta, kładziesz przed mistrzami gotowy obraz: „Tak to wygląda dziś, tak będzie za sześć księżyców, tak można temu zapobiec."',maps:'SYSADMIN'},
+    {text:'Stawiasz przy progach dzwony i progi ostrzegawcze: gdy napór zbliży się do granicy, mechanizmy same włączą tymczasowe wzmacnianie i przekierują część strumienia do bocznych bram.',maps:'DEVOPS'},
+    {text:'Zapisujesz w księdze, że „petenci cisną coraz mocniej" i odkładasz pióro, czekając, aż ktoś wyżej postawiony wyda rozkaz.',maps:'INTERN'},
+    {text:'Mówisz: „Dostawimy większy mur, jak naprawdę przestanie wystarczać." Skoro systemy zawsze były „trochę za małe, ale działały", liczysz, że i tym razem jakoś to będzie.',maps:'FTI'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 7 / 10',intro:'Podczas porannego obchodu twój towarzysz ze zmiany macha do ciebie z uśmiechem i pokazuje zwój już podpięty do działającej maszyny. „Chcę zmienić tylko jedną kreskę — mówi. — Wpisywanie tego do księgi zmian zajmie nam pół dnia. Przecież to drobiazg."',
+  text:'Co mówisz i robisz?',
+  answers:[
+    {text:'Tłumaczysz spokojnie, że każdy zwój ma swoją księgę i że „jedna kreska" kiedyś już sprowadziła burzę większą, niż ktokolwiek się spodziewał; proponujesz, że pomożesz mu spisać zmianę szybko, ale zostawiając ślad.',maps:'SUPPORT'},
+    {text:'Odmawiasz wprost: żadnej zmiany bez wpisu do księgi. Dla ciebie ważniejsze jest to, by później dało się prześledzić każdy dotyk, niż to, czy dziś pójdzie trochę szybciej.',maps:'SYSADMIN'},
+    {text:'Mówisz: „Nawet jeśli teraz się zgodzę, jutro ktoś inny zrobi to samo, ale gorzej." Proponujesz zbudowanie prostego rytuału, który nie pozwoli dotknąć zwoju bez świętego zapisu.',maps:'DEVOPS'},
+    {text:'Czujesz, że ma rację, bo sam nie lubisz papierologii, ale nie wiesz, jak odmówić. Mówisz niepewnie: „Ja bym tego nie tykał bez zgody mistrza…"',maps:'INTERN'},
+    {text:'Wzdychasz, rozglądasz się, czy nikt nie patrzy, i mówisz: „Dobrze, tylko ta jedna kreska." Wiesz, że takie „tylko raz" wydarza się co najmniej trzy razy na księżyc.',maps:'FTI'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 8 / 10',intro:'Dostajesz swój pierwszy „własny" mechanizm. Na stole ląduje zwój z ogólnym zarysem: ma przyjmować prośby pewnej grupy petentów, coś z nimi zrobić i oddać wynik dalej. Nie ma terminu, nie ma dokładnych wymagań, tylko lakoniczna adnotacja: „Przygotować do użycia."',
+  text:'Jak zabierasz się do pracy?',
+  answers:[
+    {text:'Najpierw szukasz ludzi: pytasz, do jakiej pracy mechanizm ma służyć, jakie prośby będzie oglądał, kto będzie go odprawiał i w jakich warunkach.',maps:'SUPPORT'},
+    {text:'Zostawiasz ozdoby na później i zaczynasz od fundamentu: pieczęci ochronnych, kluczy dostępu, podziału ról i ścieżek. Dopiero gdy mury i zamki stoją stabilnie, myślisz o wygodzie i pięknie.',maps:'SYSADMIN'},
+    {text:'Od pierwszej chwili myślisz o tym, jak uniknąć ręcznego dłubania: tworzysz rytuał, który z jednego opisu potrafi za każdym razem zbudować ten sam mechanizm tak samo, bez wahań i „magii w palcach" rzeźbiarza.',maps:'DEVOPS'},
+    {text:'Siadasz ze zwojem, czytasz go od początku do końca, chwytasz za dłuto i zaczynasz rzeźbić „po kolei" — choć w środku kołacze myśl, że może są lepsze, bardziej uporządkowane sposoby.',maps:'INTERN'},
+    {text:'Odkładasz księgi i szablony: rzeźbisz wszystko ręcznie, bez zapisu i bez powtarzalnych rytuałów, bo „tak jest szybciej". Wierzysz, że jak coś trzeba będzie odtworzyć, zrobisz to drugi raz „z głowy".',maps:'FTI'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 9 / 10',intro:'Od trzech księżyców prowadzisz nocne dyżury przy tablicy omenów. Jeden omen wraca. Za każdym razem wygląda tak samo: cichy trzask, przygaśnięcie światła, szept mechanizmu: „Błąd, spróbuj ponownie." Za pierwszym razem mistrz kazał odprawić szybki obrzęd odgonienia. Za drugim powtórzył te same gesty. Teraz omen wraca po raz trzeci w tym samym księżycu.',
+  text:'Co robisz tym razem?',
+  answers:[
+    {text:'Tworzysz osobny pergamin z kroniką trzech powrotów: daty, godziny, skutki dla petentów, użyte rytuały. Z tym zwojem stajesz przed arcymistrzem: „To nie jest już drobny omen. To sprawa, która wymaga decyzji."',maps:'SUPPORT'},
+    {text:'Zostawiasz powierzchowne obrzędy innym i schodzisz do samego źródła: szukasz wspólnego rdzenia wszystkich trzech wystąpień — tej samej ścieżki, tego samego kamienia pamięci.',maps:'SYSADMIN'},
+    {text:'Przy kolejnym pojawieniu się omenu ustawiasz dzwon, który zadzwoni jeszcze zanim objaw w pełni się ujawni, oraz rytuał tymczasowego odpędzenia — ale tym razem z pełnym zapisem wszystkiego, co mechanizmy robią w tym momencie.',maps:'DEVOPS'},
+    {text:'Odprawiasz znajomy rytuał odgonienia po raz trzeci, dokładnie tak, jak widziałeś u mistrzów, i wpisujesz w księdze: „Omen zażegnany, jak zawsze." W środku czujesz lekki niepokój.',maps:'INTERN'},
+    {text:'Odganiasz omen po raz trzeci i zapisujesz jednym słowem: „Pokonany." Liczy się to, że tablica znów świeci spokojną zielenią, a dzwony milkną.',maps:'FTI'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 10 / 10',intro:'W każdy pierwszy dzień tygodnia ta sama scena powtarza się jak zaklęcie: cała drużyna schodzi do dusznej sali, gdzie stoi zwój obrzędu, którego nikt już naprawdę nie lubi, ale wszyscy muszą go odprawiać. Rytuał trwa czterdzieści pięć spokojnych oddechów, jeśli nic się nie pomyli. Prawie nigdy się nie udaje. W księgach błędów co tydzień pojawiają się te same pomyłki.',
+  text:'Co postanawiasz z tym zrobić?',
+  answers:[
+    {text:'Zapisujesz wszystkie kroki obrzędu jasno i po ludzku, dopisujesz typowe potknięcia i tworzysz prostą księgę sprawdzeń, którą każdy może mieć przy pulpicie.',maps:'SUPPORT'},
+    {text:'Siadasz po godzinach przy starym zwoju i przepisujesz obrzęd na rytuał pisany i zapisany: jednorazowo pochłonie to kilka godzin, ale później pozwoli wykonywać większość kroków bez udziału rąk, w tym samym porządku.',maps:'SYSADMIN'},
+    {text:'Decydujesz, że dość tego: budujesz samoistny obieg z budzicielem, który co tydzień odpali się sam, przeprowadzi rytuał według wzorca, zanotuje wynik i zawoła człowieka tylko gdy coś odchyli się od normy.',maps:'DEVOPS'},
+    {text:'Odprawiasz obrzęd ręcznie razem z innymi, mylisz się od czasu do czasu i mówisz sobie: „Kiedyś ktoś to na pewno ulepszy." Nie czujesz się jeszcze tą osobą, która miałaby ruszyć stary kamień jako pierwsza.',maps:'INTERN'},
+    {text:'Odprawiasz rytuał tak jak ci każą, mylisz się, poprawiasz byle jak i wychodzisz, ciesząc się, że to już za tobą. Za tydzień zrobisz to samo, nie myśląc o tym, że te powtarzalne błędy zabierają wam więcej czasu niż trzeba.',maps:'FTI'}
+  ]}
+],
+
+STRAZ:[
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 1 / 10',intro:'Nad ranem strażnica sygnalizuje coś, czego nie powinno tu być: wejście z dalekiej krainy, o czwartej nad ranem, na klucz jednego z braci, który według ksiąg śpi spokojnie w odległym klasztorze. Hasło było poprawne.',
+  text:'Co robisz jako pierwszy krok?',
+  answers:[
+    {text:'Natychmiast zamykasz przejście, odcinasz dalszy ruch na tym kluczu, budzisz właściciela innym kanałem i otwierasz księgę naruszeń — traktujesz to jak realne włamanie, nie ciekawostkę.',maps:'SECDEF'},
+    {text:'Zanim kogokolwiek zawezwiesz, wchodzisz w ślady: zapisujesz dokładne dane sesji, sprawdzasz, co działo się tuż przed i tuż po tym wejściu, jakie zwoje otwarto, jakie mechanizmy dotknięto.',maps:'PENTEST'},
+    {text:'Sprawdzasz, jakie prawa chronią braci gdy śpią z dala od twierdzy: czy taki przypadek wymaga natychmiastowego wezwania sędziów, czy wystarczy wewnętrzne dochodzenie.',maps:'GRC'},
+    {text:'Czujesz ciężar sytuacji, ale nie wiesz, jak daleko wolno ci się posunąć. Piszesz do bardziej doświadczonego towarzysza: „Mamy dziwne wejście na czyjś klucz o świcie — co czynić?"',maps:'INTERN'},
+    {text:'Patrzysz na znaki, wzruszasz ramionami: „Może tylko przechodzień, może klucz zgłupiał." Nie zamykasz przejścia, pozwalasz by poranek sam „rozpuścił" ten incydent.',maps:'FTI'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 2 / 10',intro:'Dostajesz na stół wynik wewnętrznej rewizji. Jedna linijka pali w oczy najmocniej: trzydziestu z stu braci nie zmieniło swojego słowa dostępu od dwóch zim, mimo dawnej przysięgi.',
+  text:'Jak reagujesz na to odkrycie?',
+  answers:[
+    {text:'Wzywasz wszystkich naruszycieli przed oblicze straży i nakładasz na ich klucze przymusową zmianę słowa przy następnym wejściu, tłumacząc, że przywilej bycia w bractwie oznacza też obowiązek dbania o jego zamki.',maps:'SECDEF'},
+    {text:'Wybierasz kilka starych słów z losowej próbki i próbujesz je złamać własnymi metodami — jeśli ich upadek okaże się banalny, pokażesz radzie, jak łatwo obcy mógłby wejść tym samym śladem.',maps:'PENTEST'},
+    {text:'Siadasz z księgami prawa i zgodności: zapisujesz skalę naruszenia, wskazujesz, które przepisy są martwe albo nieegzekwowane, i proponujesz poprawki — jasne czasy obowiązywania słów, strażnicy egzekwujący.',maps:'GRC'},
+    {text:'Spisujesz naruszenie w kronice i odkładasz zwój na stos „do decyzji rady", czując, że to zbyt wielka sprawa jak na twoje ramiona.',maps:'INTERN'},
+    {text:'Wysyłasz ogólny pergamin z przypomnieniem o przysiędze zmiany słowa i zakładasz, że „kto będzie chciał, ten zmieni". Nikt nie odpowiada.',maps:'FTI'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 3 / 10',intro:'Do sali straży wchodzi zdenerwowany petent trzymający zmięty pergamin. Mówi, że chciał wejść do waszej twierdzy, ale ścieżka, którą ktoś mu przysłał, zaprowadziła go do bramy „prawie takiej samej" jak wasza. Wpisał tam swoje znaki, zanim coś go tknęło i uciekł. Kiedy porównujesz kształt z waszym prawdziwym wejściem, włos jeży się na karku.',
+  text:'Co robisz z tym znaleziskiem?',
+  answers:[
+    {text:'Traktujesz to jak realny atak na bramę: nakazujesz zamknąć do niej drogę wszystkim, ustawiasz ostrzeżenia, przeglądasz ślady prób wejścia i wzywasz alarm dla całego zakonu.',maps:'SECDEF'},
+    {text:'Zostawiasz emocje na później i zaczynasz badanie kształtu fałszywej bramy: kto mógł znać tyle szczegółów, skąd kopiował, czy zbiera znaki tylko od waszych ludzi, czy łowi szerzej.',maps:'PENTEST'},
+    {text:'Spisujesz wydarzenie według prawa: kiedy petent przyszedł, co pokazał, jakie różnice zauważyłeś. Sprawdzasz, czy wasze przepisy nakazują wezwanie sędziów z zewnątrz.',maps:'GRC'},
+    {text:'Mówisz petentowi, żeby pod żadnym pozorem nie używał tej ścieżki, bierzesz od niego pergamin i przekazujesz go dalej do starszego strażnika.',maps:'INTERN'},
+    {text:'Rzucasz okiem, wzruszasz ramionami: „Zwykły podstęp, takie rzeczy krążą." Ostrzegasz petenta jednym zdaniem i nie robisz nic więcej.',maps:'FTI'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 4 / 10',intro:'Do twierdzy przychodzi wieść: za dwa tygodnie pojawi się obcy sędzia, by obejrzeć wasze mury, bramy i księgi. Nie wasz mistrz — ktoś z zewnątrz, kto patrzy tylko na zgodność pieczęci z prawem. Część braci wzdycha: „Jakoś przejdzie, poprzednią przeżyliśmy."',
+  text:'Od czego ty zaczynasz przygotowania?',
+  answers:[
+    {text:'Przechodzisz po salach straży i przeglądasz zapisy, pieczęcie, uprawnienia, listy wejść — chcesz zobaczyć twierdzę oczami sędziego, żeby wygładzić to, co da się poprawić, zanim jego but przekroczy próg.',maps:'SECDEF'},
+    {text:'Proponujesz, by zanim przyjdzie obcy, ktoś z was spróbował włamać się do własnych murów: wewnętrzna próba sił, by znaleźć dziury, które sędzia mógłby wypatrzyć.',maps:'PENTEST'},
+    {text:'Zbierasz wszystkie księgi prawa i dowodów: polityki, rejestry wejść, zgody, kroniki dawnych incydentów. Układasz je tak, by na każde pytanie sędziego dało się odpowiedzieć pergaminem, a nie tylko słowem.',maps:'GRC'},
+    {text:'Idziesz do mistrza straży i pytasz, czego dokładnie sędzia będzie szukał: które prawa, które bramy, jakie dowody. Zapisujesz to skrupulatnie.',maps:'INTERN'},
+    {text:'Wzruszasz ramionami i mówisz: „Poprzednia rewizja też minęła, i ta minie." Nie poprawiasz niczego, nie zbierasz dodatkowych ksiąg.',maps:'FTI'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 5 / 10',intro:'Dostajecie raport z próby przeprowadzonej przez zewnętrznych włamywaczy. Jedno zdanie zamiera ci w gardle: „Straż głównych wrót daje się oszukać prostym gestem — przy odpowiedniej kolejności ruchów brama otwiera się bez prawdziwego klucza."',
+  text:'Jak reagujesz na tę odkrytą słabość?',
+  answers:[
+    {text:'Traktujesz to jak alarm najwyższego stopnia: natychmiast odgradzasz słaby punkt dodatkowymi barierami, ograniczasz przejścia tym szlakiem i wzywasz murarzy oraz mistrzów straży na pilne zgromadzenie.',maps:'SECDEF'},
+    {text:'Odtwarzasz podstęp krok po kroku, dokładnie tak jak opisano w raporcie, zapisując gesty, warunki i skutki. Tworzysz z tego czytelny obraz, by murarze dokładnie wiedzieli, co naprawić.',maps:'PENTEST'},
+    {text:'Sprawdzasz, co mówią prawa zakonu o takiej skali naruszenia: czy trzeba poinformować petentów, czy wzywać sędziów, w jakim czasie należy usunąć błąd. Układasz chronologię i zapisujesz kroki naprawy.',maps:'GRC'},
+    {text:'Bierzesz raport, przekazujesz go murarzom i mistrzom z krótkim komentarzem: „To wygląda poważnie, co dalej?" Czekasz na wytyczne.',maps:'INTERN'},
+    {text:'Czytasz o „prostym geście", krzywisz się i mówisz: „To tylko teoria — nie ma dowodu, że ktoś poza włamywaczami próbował tą drogą przejść." Odkładasz naprawę na później.',maps:'FTI'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 6 / 10',intro:'Drużyna rozważa przyjęcie do twierdzy nowego mechanizmu stworzonego przez obcego mistrza. Ma obiecywać wielkie ułatwienia. Zanim jednak zawiśnie w głównych komnatach, proszą ciebie i twoją straż o przegląd zabezpieczeń.',
+  text:'Jak podchodzisz do tej prośby o „wpuszczenie obcego"?',
+  answers:[
+    {text:'Zaczynasz od twardej mapy: przeglądasz wszystkie ścieżki, którymi mechanizm ma rozmawiać z twierdzą, sprawdzasz, jakie klucze mu przewidziano, jakie dane może czytać i zmieniać.',maps:'SECDEF'},
+    {text:'Oprócz czytania zwojów, wypytujesz po świecie: w karczmach, na innych strażnicach, u zaprzyjaźnionych bractw. Interesuje cię, jak ten mechanizm zachował się, gdy gdzie indziej coś pękło.',maps:'PENTEST'},
+    {text:'Bierzesz do ręki księgi prawa zakonu i porównujesz je z przysięgami obcego mistrza: kto ponosi odpowiedzialność za wyciek, jakie są zasady wyjścia z umowy. Szukasz zgodności z waszymi pieczęciami.',maps:'GRC'},
+    {text:'Czytasz zwoje mistrza tak uważnie jak potrafisz, ale wiele słów jest dla ciebie nowych. Idziesz do starszych braci z listą pytań: „Co jeszcze powinniśmy sprawdzić przy takich obcych machinach?"',maps:'INTERN'},
+    {text:'Patrzysz na pieczęcie obcego mistrza, widzisz parę znanych herbów i mówisz: „Skoro ma te znaki, to znaczy, że ktoś go już sprawdził." Przykładasz własną pieczęć na pergaminach zgody.',maps:'FTI'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 7 / 10',intro:'Późnym popołudniem dociera do ciebie szept: „Sekrety bractwa podobno wypłynęły poza mury." Nikt nie pokazuje konkretnego dowodu — tylko słowa, że ktoś gdzieś wie za dużo. Prawo mówi jasno: gdy istnieje ryzyko, że święte dane mogły opuścić twierdzę, straż powinna działać szybko.',
+  text:'Jak reagujesz na tę niepewną wieść?',
+  answers:[
+    {text:'Uruchamiasz od razu obrzęd odpierania: odgradzasz najbardziej wrażliwe komnaty, przeglądasz świeże zapisy wejść i wyjść, wyznaczasz granicę zdarzenia i układasz wstępną chronologię.',maps:'SECDEF'},
+    {text:'Skupiasz się na szukaniu dróg ucieczki w zapisach: które systemy mają kontakt ze światem zewnętrznym, jakie nietypowe wywołania widać w logach, gdzie brakuje ścieżek audytu.',maps:'PENTEST'},
+    {text:'Siadasz z księgami prawa i kalendarzem: sprawdzasz, w jakim czasie zakon musi poinformować sędziów lub dotkniętych petentów, co musi zawierać taki komunikat i jakie kroki powinny być wykonane.',maps:'GRC'},
+    {text:'Zbierasz strzępy historii w jeden krótki raport i wnosisz go przed oblicze arcymistrza: „Są pogłoski o wycieku, ale nie mamy jeszcze dowodu. Co każesz nam czynić?"',maps:'INTERN'},
+    {text:'Wzruszasz ramionami: „Nie wiemy na pewno, może to tylko fałszywy omen." Nie podejmujesz żadnych kroków, czekasz, aż wieść sama się potwierdzi albo ucichnie.',maps:'FTI'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 8 / 10',intro:'Późnym wieczorem na twoim biurku pojawia się nagły zwój z osobistą pieczęcią arcymistrza: „Potrzebuję wejścia do świętego mechanizmu natychmiast. Mój klucz nie działa. Jutro o świcie rada." Słowa krótkie, ton pilny. To właśnie ten rodzaj prośby, dla której istnieją obrzędy awaryjnego dostępu.',
+  text:'Jak postępujesz w tej sytuacji?',
+  answers:[
+    {text:'Zanim dotkniesz zamków, weryfikujesz głos arcymistrza drugim szlakiem: innym kanałem, inną pieczęcią, może dodatkowym znakiem. Dopiero gdy masz pewność, uruchamiasz awaryjny obrzęd dostępu, zapisując każdy krok.',maps:'SECDEF'},
+    {text:'Odpowiadasz z pytaniem, co dokładnie ma zostać uczynione w świętym mechanizmie: jeśli to tylko odczyt, proponujesz, że sam wejdziesz, wykonasz niezbędne kroki i pokażesz wynik, zamiast wręczać pełen klucz.',maps:'PENTEST'},
+    {text:'Sięgasz po opisany w księgach obrzęd „dostępu w potrzebie": specjalny awaryjny rytuał. Odpuszcza on część zwykłych wymogów, ale wymaga dodatkowych pieczęci, świadków i pełnego zapisu.',maps:'GRC'},
+    {text:'Czujesz nacisk autorytetu. Dajesz więc dostęp, jak prosi, ale nie do końca ogarniasz, jak poprawnie zapisać to w kronikach; kończysz na krótkiej notatce „udzielono dostępu".',maps:'INTERN'},
+    {text:'Nawet nie próbujesz weryfikować pieczęci — to w końcu arcymistrz. Od razu otwierasz mu pełen klucz do świętego mechanizmu, bez dodatkowych pytań, bez awaryjnego rytuału i bez dokładnego zapisu.',maps:'FTI'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 9 / 10',intro:'Za trzydzieści dni do twierdzy ma przybyć sędzia, który nada wam nową pieczęć straży. Zrobiono wstępny przegląd: dla czterdziestu z setki praw brakuje pełnych ksiąg albo dowodów, że działają. Czasu jest mało, rąk też.',
+  text:'Jak podchodzisz do tego wyścigu z czasem?',
+  answers:[
+    {text:'Patrzysz na prawa pod kątem ryzyka: wybierasz te, których złamanie naprawdę otworzyłoby bramy dla wroga albo naraziło najwięcej petentów. Na te kierujesz drużynę w pierwszej kolejności.',maps:'SECDEF'},
+    {text:'Rozróżniasz, co jest rzeczywistą dziurą, a co tylko brakiem opisu: szukasz miejsc, gdzie zabezpieczenia istnieją ale nikt ich nie spisał, i miejsc gdzie nie ma ani zabezpieczenia, ani księgi.',maps:'PENTEST'},
+    {text:'Tworzysz ze strażnikami praw księgę naprawy: do każdego brakującego prawa przypisujesz opiekuna, termin, potrzebne kroki i sposób potwierdzenia. Nawet jeśli wszystkiego nie zdążycie, przy rewizji będzie widać plan.',maps:'GRC'},
+    {text:'Zbierasz dawne księgi i raporty, próbując ustalić, co tak naprawdę już istnieje, tylko leży porozrzucane po szafach. Pytasz starszych, czego według nich najbardziej brakuje.',maps:'INTERN'},
+    {text:'Podnosisz wzrok znad listy braków i mówisz: „Zdążymy, jak zawsze." Nie wyznaczasz rąk ani terminów, liczysz na to, że jakoś się ułoży.',maps:'FTI'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 10 / 10',intro:'W przejściu do wspólnych komnat mijasz codzienny widok, który od dawna cię uwiera: na klamkach wspólnych wrót wiszą klucze. Czasem jeden, czasem kilka na jednym kółku, z tabliczkami „magazyn", „skryptorium", „archiwum". Bracia mówią, że tak wygodniej — „wszyscy tu swoi".',
+  text:'Co postanawiasz z tym zrobić?',
+  answers:[
+    {text:'Wpisujesz nowe prawo: zakaz wieszania kluczy na klamkach wspólnych wrót. Dodajesz prosty mechanizm — jeśli ktoś złamie to prawo, zamek sam zaciśnie się i zażąda osobistego potwierdzenia.',maps:'SECDEF'},
+    {text:'Zanim ruszysz na wojnę z nawykiem, mierzysz jego niebezpieczeństwo: sprawdzasz, dokąd prowadzą te klucze, jakie szkody mógłby wyrządzić obcy, który jeden z nich zabierze.',maps:'PENTEST'},
+    {text:'Organizujesz naukę dla braci, pokazując im na przykładach, jak takie drobiazgi kończyły się katastrofą w innych twierdzach. Potem zapisujesz w kronikach, że szkolenie się odbyło.',maps:'GRC'},
+    {text:'Zatrzymujesz się w przejściu, mówisz braciom: „Nie wiążcie kluczy na klamkach, to zły zwyczaj" i notujesz w swojej księdze, że ostrzegłeś. Dalej jednak nie forsujesz zmian w prawie.',maps:'INTERN'},
+    {text:'Zerkasz na klucze, wzruszasz ramionami i mówisz: „We wszystkich zamkach tak wieszają, to nie wada, tylko tradycja." Zostawiasz je tam, gdzie są.',maps:'FTI'}
+  ]}
+],
+
+ZGROMADZENIE:[
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 1 / 10',intro:'Sala narady pachnie już zimnym woskiem i znużeniem. Obrady trwają drugą godzinę, księga spraw wciąż nie jest doprecyzowana, drużyna szacuje coraz wolniej. Każdy widzi wagę zwojów inaczej. Słowa krążą w kółko, a piasek w klepsydrze sypie się bez litości.',
+  text:'Co robisz?',
+  answers:[
+    {text:'Podnosisz głos i przerywasz krąg: mówisz, że każda narada musi mieć początek i koniec. Proponujesz osobną „księgę przygotowań" przed następnym spotkaniem, a tę zamykasz z tym, co jest już dostatecznie doprecyzowane.',maps:'PM'},
+    {text:'Wskazujesz na samą strukturę obrzędu: mówisz, że problem leży w tym, że wchodzicie do narady bez gotowej księgi spraw i bez wyznaczonego strażnika, który pilnuje porządku. Zapisujesz to jako dług w rytuale.',maps:'SM'},
+    {text:'Przerywasz spór jednym pytaniem: „Które z tych zwojów rozumiemy na tyle dobrze, że możemy je dziś uczciwie oszacować?" Zaczynasz od tych, odkładając mgliste pomysły do czasu.',maps:'BA'},
+    {text:'Kierujesz rozmowę na wagę, nie na ilość: pytasz, „które z tych zwojów niosą największą wartość dla zakonu, jeśli spojrzymy rok naprzód?" i od tej odpowiedzi prowadzisz dyskusję.',maps:'PO'},
+    {text:'Piszesz skrupulatnie wszystko, co pada, przekładasz kartki w księdze i czekasz, aż ktoś silniejszy od ciebie w końcu powie „dość".',maps:'INTERN'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 2 / 10',intro:'Na kolejnej naradzie sala jest pełna przedstawicieli różnych cechów zakonu. Dwa stronnictwa siedzą naprzeciw siebie. Jedni chcą szybkości. Drudzy domagają się głębi i dokładności. Oba roszczą sobie prawo do pierwszeństwa. Wiesz, że bez decyzji drużyna dalej będzie szarpać dzieło na dwie strony.',
+  text:'Jak prowadzisz tę sytuację?',
+  answers:[
+    {text:'Sięgasz do pierwotnej przysięgi dzieła i kart wizji: przywołujesz zapisaną wcześniej wagę cech i sprawdzasz, który zwój naprawdę spełnia warunki, jakie zakon sam sobie nadał na początku.',maps:'PM'},
+    {text:'Mówisz wprost, że wybór pomiędzy tymi wartościami przekracza twój krąg jako strażnika obrzędu: twoją rolą jest pilnować formy narady, nie rozstrzygać konfliktu wartości bractwa. Pomagasz wezwać odpowiedniego decydenta.',maps:'SM'},
+    {text:'Pytasz każdą stronę osobno, jakie będą skutki opóźnienia ich zwojów: co się stanie, jeśli poczekają jeden, trzy, sześć księżyców. Splatasz ich odpowiedzi w klarowne porównanie.',maps:'BA'},
+    {text:'Wysłuchujesz obu stron, patrzysz na wizję całości i mówisz: „To moja księga, to ja wezmę tę winę." Podejmujesz wybór, świadomie biorąc na siebie odpowiedzialność za niezadowolonych.',maps:'PO'},
+    {text:'Rozglądasz się po sali i pytasz tylko: „Kto tu rozstrzyga?" Po czym czekasz, aż ktoś inny weźmie na siebie ciężar wyboru.',maps:'INTERN'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 3 / 10',intro:'Narada wchodzi w dobre tempo. Zwoje są wreszcie doprecyzowane, drużyna „w połowie kroku". Właśnie wtedy do sali wchodzi dostojnik z wyższej wieży i kładzie na stole nowy pergamin: „Postanowiliśmy inaczej." Drużyna zamiera.',
+  text:'Co robisz jako strażnik tej narady?',
+  answers:[
+    {text:'Zapisujesz zmianę tak, jak na to zasługuje: mierzysz jej ciężar w czasie, zasobach i ryzyku. Przygotowujesz radzie jasny obraz: co trzeba będzie wyrzucić, co przeliczyć, ile to pochłonie.',maps:'PM'},
+    {text:'Przypominasz o świętości samej narady: mówisz, że nowy kształt musi trafić do księgi przygotowań i zostać obgadany na następnym obrzędzie, a nie w połowie obecnego. Bronisz rytuału przed kaprysem.',maps:'SM'},
+    {text:'Siadasz z dostojnikiem nieco z boku i rozkładasz jego wizję na części: co dokładnie się zmienia, dlaczego, jakie problemy ma rozwiązać. Szukasz sposobu, by zachować jak najwięcej z dotychczasowego kształtu.',maps:'BA'},
+    {text:'Ważysz nowy kształt przeciw dawnemu. Jeśli czujesz, że rzeczywiście jest dużo lepszy dla dzieła, przyjmujesz go, nawet kosztem rozpadu bieżącej narady. Mówisz drużynie uczciwie: „Zmieniamy kurs, bo warto."',maps:'PO'},
+    {text:'Odwracasz się do drużyny i mówisz po prostu: „Dostojnik tak powiedział, więc zmieniamy." Nie liczysz kosztu, nie bronisz poprzednich ustaleń.',maps:'INTERN'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 4 / 10',intro:'Na tablicy narad trzy ostatnie cykle wyglądają tak samo: drużyna zrobiła mniej, niż obiecała. Prędkość słabnie trzecią naradę z rzędu. W rozmowach między stołami czujesz napięcie i szepty o dodatkowych pracach „na boku", których nikt oficjalnie nie wpisuje do ksiąg.',
+  text:'Co robisz, widząc ten powtarzający się spadek?',
+  answers:[
+    {text:'Zaczynasz szukać ukrytego ciężaru zakonu: zbierasz informacje o nieplanowanych zwołaniach, nagłych prośbach, zmianach zwojów „w locie", pracach poza kręgiem dzieła.',maps:'PM'},
+    {text:'Prowadzisz głębszą naradę powrotną: w bezpieczniejszej, mniejszej sali prosisz drużynę, by powiedziała, co ich naprawdę boli — napięcia, przeszkody, niewypowiedziane konflikty.',maps:'SM'},
+    {text:'Porównujesz obiektywnie zwoje z trzech ostatnich narad: sprawdzasz, czy drużyna naprawdę zwolniła, czy po prostu zakres i złożoność spraw się zmieniły.',maps:'BA'},
+    {text:'Pytasz drużynę wprost: „Co was blokuje i jak ja mogę zmienić kształt księgi, żeby było mniej szarpania?" Sprawdzasz, czy to nie ty za często dodajesz i zmieniasz zwoje w trakcie.',maps:'PO'},
+    {text:'Zapisujesz w kronice, że prędkość spada trzecią naradę z rzędu, kiwasz głową ze zrozumieniem i pytasz, kiedy ktoś „weźmie się za ten problem".',maps:'INTERN'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 5 / 10',intro:'Dzieło, które miało być dumą zakonu, spóźnia się już o dwa tygodnie. Zasoby są na oparach: ludzie zmęczeni, cierpliwość dostojników coraz cieńsza. Lista spraw w księdze wciąż się zmienia. Za tydzień masz stanąć przed radą i wytłumaczyć, co się dzieje.',
+  text:'Jak działasz w tej sytuacji?',
+  answers:[
+    {text:'Przygotowujesz księgę stanu: pokazujesz obecną drogę dzieła, to, co naprawdę jest gotowe, co w toku, co nie zdąży. Do tego dokładasz możliwe sposoby naprawy. Idziesz do rady z prawdą, nie z legendą.',maps:'PM'},
+    {text:'Zwołujesz przywódców drużyny i strażnika spraw do jednej sali. Razem szukacie prawdziwych przeszkód: blokad decyzyjnych, nieobecnych ludzi, zbyt wielu naraz otwartych zwojów.',maps:'SM'},
+    {text:'Rozkładasz listę spraw na czynniki pierwsze: patrzysz, co da się skończyć w tygodniu, co można świadomie przesunąć, a co należy wyrzucić. Układasz całość tak, by mimo opóźnienia dzieło miało sens.',maps:'BA'},
+    {text:'Mówisz „dość" ciągłemu dokładaniu: zamrażasz listę teraz. Oznajmiasz, że to, co jest w księdze, dokończycie, a reszta poczeka na kolejny cykl. Przed radą stajesz sam, biorąc na siebie tę rozmowę.',maps:'PO'},
+    {text:'Patrzysz na spóźnione dzieło i myślisz: „Skoro już jesteśmy po terminie, to i tak nie robi różnicy." Dodajesz nowe sprawy do księgi, bo „w końcu kiedyś i tak trzeba będzie je zrobić".',maps:'FTI'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 6 / 10',intro:'W samym środku spokojnie płynącej narady posłaniec wbiega bez pukania z purpurowym zwojem z pieczęcią arcymistrza. „Jedna mała runa do dodania prosto do bieżącej księgi — wciśnijcie ją gdzieś po drodze." Drużyna wie, że żadna runa nie jest naprawdę „mała", gdy wchodzi w środek rozgrzanego dzieła.',
+  text:'Jak odpowiadasz na tę zaczepkę?',
+  answers:[
+    {text:'Przyjmujesz żądanie, ale zapisujesz ciężar runy w czasie i zasobach, pokazujesz, co trzeba będzie przesunąć lub wyrzucić. Przedstawiasz arcymistrzowi klarowne wybory, by decydował z pełną księgą, a nie mglistym „to drobiazg".',maps:'PM'},
+    {text:'Uprzejmie, ale stanowczo wskazujesz, że kształt bieżącej księgi waży strażnik spraw. Prosisz arcymistrza, by najpierw porozmawiał z nim i uzgodnił, czy ta runa rzeczywiście ma wejść w środku narady.',maps:'SM'},
+    {text:'Pytasz arcymistrza, co ta runa ma rozstrzygnąć: jaki problem rozwiązuje, czego dziś brakuje. Może okaże się, że jest prostszy sposób niż wrzucanie nowego znaku do przepełnionego kręgu.',maps:'BA'},
+    {text:'Rozmawiasz z arcymistrzem jak równy z równym: jeśli runa niesie coś kluczowego, decydujesz, że wejdzie — ale jasno mówisz, które inne sprawy z księgi wylecą albo przesuną się. Potem tłumaczysz to drużynie.',maps:'PO'},
+    {text:'Wracasz do stołu, wzdychasz i mówisz drużynie: „Arcymistrz chce, więc rzeźbimy." Wciskasz runę bez pytania o jej ciężar, nie wyrzucając niczego innego z księgi.',maps:'FTI'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 7 / 10',intro:'Twój kalendarz wygląda jak pole po bitwie. W każdym cyklu są cztery powtarzające się obrzędy: wielka narada stanu z dostojnikami, narada powrotna z drużyną, nauka z kronikarzem i petentami oraz czas na dopracowanie księgi przygotowań. Gdybyś miał wybrać jeden obrzęd, którego za żadne skarby nie chciałbyś oddać, musisz zdecydować teraz.',
+  text:'Którą naradę uważasz za najważniejszą?',
+  answers:[
+    {text:'Naradę stanu z dostojnikami — bo tam waży się los całego dzieła, tam pojawia się prawdziwy obraz postępu i widmo klęski staje się jawne przed radą. Bez tej chwili szczerości wszystko inne to tylko lokalne poprawki.',maps:'PM'},
+    {text:'Naradę powrotną — bo tylko tam, w kręgu bez petentów i dostojników, drużyna może powiedzieć prawdę o tym, jak naprawdę pracuje. Tylko ten obrzęd ma moc poprawić sam rytuał.',maps:'SM'},
+    {text:'Nauki z kronikarzem i petentami — bo tam zwoje przestają być tylko literami, a zyskują kształt w świecie. Bez tych rozmów łatwo budować katedry, których nikt nie potrzebuje.',maps:'BA'},
+    {text:'Czas księgi przygotowań — bo bez dobrze dopracowanej listy spraw każda narada stanie się tylko chaotycznym targiem. Porządek przed spotkaniem jest ważniejszy niż fajerwerki w jego trakcie.',maps:'PO'},
+    {text:'Żadną — uważasz, że stare pergaminy z poprzednich narad wystarczą, a kolejne obrzędy to głównie strata oddechu. Gdybyś mógł, najchętniej „po prostu byś robił".',maps:'FTI'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 8 / 10',intro:'Kronikarze przynoszą świeże skargi i prośby, które wyraźnie wskazują nowy, nieplanowany strumień potrzeb petentów. Nikt tego nie planował, nie ma tego w księdze. Jeśli to żądanie wprowadzicie, zmieni całą ścieżkę dzieła. Jeśli je zignorujecie, może obrócić się w gniew petentów.',
+  text:'Co robisz z tą nową wizją?',
+  answers:[
+    {text:'Zanosisz odkrycie do rady jako sprawę wielkiej wagi — ale przygotowujesz pełną księgę: na czym polega nowe żądanie, jak zmieni drogę dzieła, jakie są możliwe warianty. To rada ma zdecydować, czy przekierować rzekę.',maps:'PM'},
+    {text:'Upewniasz się, że wizja nie zginie w szumie: pilnujesz, by trafiła do strażnika spraw jako oficjalny wniosek. Twoją rolą jest dopilnować, by nowy strumień wieści popłynął właściwym kanałem.',maps:'SM'},
+    {text:'Tworzysz osobną księgę dla tego odkrycia: zapisujesz, kto żąda, jak często powtarza się ten motyw, co petenci robią teraz, żeby obejść brak tej cechy. Z mgły wizji robisz coś, co można zważyć.',maps:'BA'},
+    {text:'Wyjmujesz mapę dzieła i przykładasz do niej nowe żądanie: sprawdzasz, czy pasuje do pierwotnej wizji, czy księżyce i zasoby pozwalają na jego wprowadzenie. Szukasz miejsca — albo mówisz „nie" wprost.',maps:'PO'},
+    {text:'Oznajmiasz wszem i wobec: „Wielkie odkrycie!" — po czym odkładasz je na bok, nie przekuwając w żaden plan, bo „to nie twój krąg". Liczysz, że ktoś inny zajmie się tym za ciebie.',maps:'PROFUSER'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 9 / 10',intro:'Co kilka księżyców wracasz do tego samego sporu: drużyna, kronikarze i dostojnicy inaczej rozumieją słowo „gotowe". Dla drużyny to zwój działający w sali prób. Dla kronikarzy — taki, którego da się sensownie opisać. Dla dostojników — to, co można bez wstydu ogłosić petentom. Konsekwencje widać wszędzie.',
+  text:'Co proponujesz, żeby przerwać ten krąg nieporozumień?',
+  answers:[
+    {text:'Proponujesz warsztat z całym Trybunałem: zapraszasz drużynę, kronikarzy, dostojników i razem ustalacie definicję „gotowe" dla waszego dzieła. Spisujecie ją w księdze znaków spełnienia, którą wszyscy podpisują.',maps:'PM'},
+    {text:'Prowadzisz obrzęd „znaków spełnienia" jak rytuał, nie spontaniczną rozmowę: przy jednym stole zasiada drużyna i ci, którzy odbierają ich pracę. Wypracowujecie wspólny mierzalny zestaw znaków.',maps:'SM'},
+    {text:'Zbierasz osobno kronikarzy i dostojników, a potem wracasz do drużyny: definiujecie konkretne, mierzalne znaki „gotowości" dla różnych typów zadań. Zamieniasz miękkie „czuję, że gotowe" w jasne kryteria.',maps:'BA'},
+    {text:'Jako opiekun wizji mówisz jasno: „To ja określam, co dla tego dzieła znaczy „gotowe"." Ustalasz kryteria, bronisz ich przed presją szybkiego pieczętowania.',maps:'PO'},
+    {text:'Wzruszasz ramionami i trzymasz się prostego hasła: „Jak działa, to gotowe." Nie widzisz problemu w tym, że dla innych „działa" znaczy coś znacznie więcej.',maps:'PROFUSER'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 10 / 10',intro:'Zwoje dokładane są jeden po drugim na podstawie domysłów drużyny i zdań w stylu „Przecież wiemy, czego chcą petenci." Tymczasem ostatnia prawdziwa rozmowa z tymi, dla których to wszystko powstaje, odbyła się sześć księżyców temu. Na naradach coraz częściej słyszysz: „Na pewno się przyda", „Ja bym tak używał" — ale brakuje świeżych głosów spoza kręgu.',
+  text:'Co robisz, widząc ten dryf na domysłach?',
+  answers:[
+    {text:'Planujesz „krąg rozmów" jako normalne zadanie w księdze: z terminem, strażnikiem i oczekiwanym wynikiem. Rozmowy z petentami przestają być „miłym dodatkiem", stają się częścią pracy nad dziełem.',maps:'PM'},
+    {text:'Widzisz brak wizji petentów jako poważną przeszkodę jakości. Wnosisz sprawę do strażnika spraw i przywódców drużyny jako realne ryzyko — nie „fajnie by było", tylko zagrożenie, że budujecie coś, co może się nie przyjąć.',maps:'SM'},
+    {text:'Organizujesz małą, ale konkretną wizję: pięć pogawędek z prawdziwymi ludźmi, tydzień na zebranie wniosków, jasny raport do pokazania na naradzie. Zaczynasz od małej próby, która może już dziś skorygować kurs.',maps:'BA'},
+    {text:'Zatrzymujesz wprowadzanie nowych run do księgi i pytasz wprost na naradzie: „Budujemy to, co nam się wydaje, czy to, czego petenci naprawdę chcą?" Dopóki nie ma odpowiedzi popartej świeżymi głosami, jesteś gotów opóźnić rozwój dzieła.',maps:'PO'},
+    {text:'Mówisz: „Znam tych ludzi, sam używam naszych machin, wizje są zbędne." Uważasz, że twoje doświadczenie i intuicja w pełni zastępują rozmowy z petentami.',maps:'PROFUSER'}
+  ]}
+],
+
+WYROCZNIA:[
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 1 / 10',intro:'Pewnego poranka księga kontroli zaczyna świecić niepokojącym znakiem: szósta część wszystkich zwojów przychodzi pusta w kluczu, który według wszystkich zaklęć miał być zawsze pełny. Ani jeden raport nie przewidywał takiej luki.',
+  text:'Co robisz jako pierwsze?',
+  answers:[
+    {text:'Śledzisz strumień zwojów w głąb rur: skąd płyną, na którym odcinku zaczynają tracić ten klucz, czy to wina jednego źródła, jednego rytuału, czy całej gałęzi systemu.',maps:'DATAENG'},
+    {text:'Mierzysz, jak brak tej szóstej części psuje proroctwa: na których raportach się odbija, jak zmienia wyniki, czy dotyka wszystkich jednakowo. Chcesz wiedzieć, czy to drobiazg, z którym można żyć.',maps:'DATASCI'},
+    {text:'Badasz samą machinę proroctw: sprawdzasz, jak demon radzi sobie z tymi pustkami, czy wróżby z ostatniego księżyca nie odjechały w dziwną stronę, jak degradacja wpłynęła na predykcje.',maps:'AIML'},
+    {text:'Piszesz krótko w księdze: „Zwoje chore, klucz pusty" i czekasz, aż któryś ze starszych magów nakaże ci, co dalej.',maps:'INTERN'},
+    {text:'Wzruszasz ramionami, wyrzucasz wszystkie zwoje z brakującym kluczem i ogłaszasz, że „wada minęła, księga znów lśni". Tracisz jedną szóstą obrazu świata, ale raporty wyglądają ładniej.',maps:'FTI'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 2 / 10',intro:'Demon, którego miesiąc temu przedstawiałeś dumnie jako „oczko w głowie Wieży", dziś zachowuje się jak pijany wróżbita. Tam, gdzie kiedyś jego odpowiedzi układały się równiutko, teraz plącze się, myli, gubi oczywiste niuanse. Petenci pytają, co się stało z „tym dobrym demonem".',
+  text:'Co robisz jako pierwsze?',
+  answers:[
+    {text:'Schodzisz do Katakumb Danych: sprawdzasz, czy pokarm demona nie zmienił się po cichu — inne pola na zwojach, nowe dziwne symbole, zmienione jednostki, znikające wartości.',maps:'DATAENG'},
+    {text:'Wchodzisz do Sali Tysiąca Liczb i rozbijasz problem na części: patrzysz osobno na różne typy spraw i porównujesz, jak często demon myli się teraz, a jak mylił się miesiąc temu.',maps:'DATASCI'},
+    {text:'Wspinasz się do Archiwum Starych Tworów: sprawdzasz, czy to na pewno ten sam demon, którego kiedyś uwiązałeś pieczęcią, kiedy ostatni raz był „odświeżany" rytuałem nauki. Dla ciebie to klasyczny dryf modelu.',maps:'AIML'},
+    {text:'Pytasz głośno w sali: „Jak sprawdzić, czemu ten demon działa gorzej?" i czekasz, aż któryś ze starszych magów zechce cię poprowadzić przez ten mrok.',maps:'INTERN'},
+    {text:'Mówisz „Uczę demona od nowa" i od razu odpalasz rytuał pełnej nauki, zmazując jego pamięć i nie próbując zrozumieć, co się stało.',maps:'FTI'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 3 / 10',intro:'Wieczorem do twojej celi wpada zziajany posłaniec. W rękach trzyma pergamin z krzywo nabazgranym: „SZYBKA ANALIZA NA JUTRO RANO". Ani słowa o tym, czego dotyczy. Ani słowa, po co. Na dole tylko dopisek: „Rada podejmie na tym decyzję."',
+  text:'Co robisz?',
+  answers:[
+    {text:'Schodzisz do Studni Źródeł: pytasz, jakie zwoje w ogóle istnieją w temacie, którego może dotyczyć prośba, i czy prowadzą do nich porządne kanały. Wiesz, że bez czystego źródła każda analiza będzie ładnie narysowaną bzdurą.',maps:'DATAENG'},
+    {text:'Sadzasz posłańca naprzeciw siebie i mrużysz oczy: pytasz, kto naprawdę stoi za tą prośbą, co dokładnie chce wiedzieć i jakie decyzje mają z tego wyniknąć. Dopóki nie masz jasnego pytania, odmawiasz rzucania zaklęć.',maps:'DATASCI'},
+    {text:'Podnosisz pergamin do światła świecy: pytasz, czy ta analiza ma potem karmić jakiegoś demona lub inną maszynę, czy to tylko jednorazowe wróżenie dla sali pełnej dostojników. Od tego zależy, czy tworzysz fundament pod przyszłe automatyczne decyzje.',maps:'AIML'},
+    {text:'Kiwasz głową, żeby „nie robić problemu". Bez słowa zaczynasz ściągać pierwsze lepsze dane, które wydają się pasować, nie pytając o prawdziwe pytanie.',maps:'INTERN'},
+    {text:'Eksportujesz dane, które masz pod ręką, rzucasz na nie zaklęcie tabeli przestawnej i od razu wysyłasz dalej. Ogłaszasz, że analiza jest gotowa, choć nawet nie wiesz, na jakie pytanie miała odpowiedzieć.',maps:'FTI'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 4 / 10',intro:'Nad ranem Wieża Danych milknie w nienaturalny sposób. Dzienne zaklęcie zasilające nie zadziałało. Raporty spóźniają się już cztery godziny, a Posłańcy zaczynają nerwowo stukać do drzwi: „Gdzie nasze liczby?" Wiesz, że są dwa pożary naraz: ten w rurach i ten w głowach tych, którzy nagle nie mają na czym oprzeć swoich decyzji.',
+  text:'Co robisz?',
+  answers:[
+    {text:'Schodzisz do Mechanizmu Rur: przeglądasz zapisy ostatniego rytuału zasilającego, szukasz miejsca, w którym cały ciąg się wywrócił — czy to świat na zewnątrz się zmienił, czy ktoś pokręcił przy ustawieniach wewnątrz Wieży.',maps:'DATAENG'},
+    {text:'Idziesz w stronę Sal Oczekujących: sprawdzasz, które zestawienia naprawdę są opóźnione i jak bardzo są ważne. Chcesz wiedzieć, co powiedzieć i komu, zanim panika zdąży się rozlać po korytarzach.',maps:'DATASCI'},
+    {text:'Kierujesz się do Komnaty Demonów: sprawdzasz, czy te same rury zasilają też demona wróżbiarskiego i czy nie żywi się on wciąż wczorajszymi danymi. Milcząca prawda bywa lepsza niż aktywnie powtarzane kłamstwo.',maps:'AIML'},
+    {text:'Podnosisz głowę znad biurka, pytasz nieśmiało, czy dzienne zaklęcie w ogóle dziś zadziałało, i czekasz, aż ktoś zadecyduje, kto ma zejść do rur.',maps:'INTERN'},
+    {text:'Podbiegasz do wielkiej dźwigni i odpalasz rytuał ręcznie raz, drugi i trzeci, jakby upór mógł zastąpić zrozumienie. Nie patrzysz na zapisy, nie sprawdzasz, co już się zdążyło uruchomić w tle.',maps:'FTI'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 5 / 10',intro:'Na kamiennej ławie ląduje ciężka skrzynia pełna surowych zwojów: cyfry, symbole, daty, odręczne dopiski, puste miejsca jak dziury po robakach. Masz z tego uwarzyć cechy, którymi nakarmisz swojego demona przepowiadającego.',
+  text:'Co robisz jako pierwsze?',
+  answers:[
+    {text:'Schodzisz do Komnaty Kamiennych Tabel: sprawdzasz, jakie przekształcenia da się wykonać już w głębi systemu — w samych zwojach i dziennych rytuałach zasilających — tak, by obliczone cechy leżały gotowe w kamieniu.',maps:'DATAENG'},
+    {text:'Przechadzasz się wśród zwojów i na podstawie wiedzy o świecie układasz hipotezy: co może mieć znaczenie, co z czym może być powiązane, które znaki są tylko szumem. Potem dopiero sprawdzasz jak to gra w liczbach.',maps:'DATASCI'},
+    {text:'Idziesz do Sali Przepowiedni: patrzysz, jakie informacje są naprawdę dostępne w chwili, gdy demon ma odpowiadać. Upewniasz się, że cechy, których planujesz go uczyć, da się rzeczywiście podać przy wróżeniu.',maps:'AIML'},
+    {text:'Sięgasz po pierwsze lepsze zaklęcie: każdą kolumnę zmieniasz „na coś" — logarytm, wskaźnik, średnią — byle powstało dużo nowych cech. Im więcej świecących dźwigni, tym potężniejsza magia… przynajmniej na pergaminie.',maps:'INTERN'},
+    {text:'Wzruszasz ramionami i podajesz demonowi surowe zwoje, bez żadnych przekształceń: „Sam się nauczysz, jesteś przecież sprytny." Demon patrzy na ciebie jak ktoś, kto dostał całe miasto, ale bez mapy.',maps:'FTI'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 6 / 10',intro:'Twój demon przepowiadający mieszka w dwóch komnatach. W komnatie próbnej wszystko jest pod kontrolą. W komnatie prawdziwej przychodzą prawdziwi ludzie z prawdziwymi pytaniami. Podajesz demonowi teoretycznie te same zwoje w obu miejscach. W próbnej mówi jedno, w prawdziwej — coś zupełnie innego.',
+  text:'Co robisz?',
+  answers:[
+    {text:'Schodzisz do Podbrzusza Wieży: sprawdzasz, czy obie komnaty korzystają naprawdę z tych samych ksiąg zaklęć — tych samych wersji bibliotek, tych samych rytuałów przygotowania cech, tego samego kształtu zwojów.',maps:'DATAENG'},
+    {text:'Rozkładasz zwoje z obu komnat na jednym stole: porównujesz, jak wyglądają wejścia i wyjścia demona tu i tam — jakie są rozkłady, brakujące wartości, dziwne odstępstwa.',maps:'DATASCI'},
+    {text:'Wchodzisz do Archiwum Pieczęci: sprawdzasz, jak demon został uwięziony w artefakcie — czy na pewno wypuszczasz tę samą wersję do obu komnat, czy rytuał odpowiadania ma takie same kroki w obu środowiskach.',maps:'AIML'},
+    {text:'Wzruszasz ramionami i mówisz tylko: „U mnie działa." Patrzysz w przestrzeń, nie bardzo wiedząc, od czego zacząć rozplątywanie tej sprzeczności.',maps:'INTERN'},
+    {text:'Sięgasz po dźwignię wdrożeń i wypuszczasz tego samego demona do komnaty prawdziwego świata jeszcze raz. A potem jeszcze raz. Liczysz, że może za trzecim razem magia się „naprawi".',maps:'FTI'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 7 / 10',intro:'W Wielkiej Sali Zestawień siadasz naprzeciw Rady Intuicji. Na stole leży twój raport: liczby ułożone w spokojne kolumny, wykresy jak kręgi w zbożu. Sprawdzałeś wszystko po kilka razy. Rada patrzy, marszczy brwi i mówi tylko: „To się nie zgadza z tym, co czujemy."',
+  text:'Co robisz?',
+  answers:[
+    {text:'Sięgasz po Pióro Dokumentarzysty: spisujesz dokładnie, skąd wzięły się liczby — które strumienie zwojów je karmiły, jakie przekształcenia przeszły, jak liczyłeś miary. Chcesz, by na pytanie „skąd to masz?" dało się odpowiedzieć jasno i krok po kroku.',maps:'DATAENG'},
+    {text:'Przysuwasz krzesło bliżej Rady: rozmawiasz o tym, co właściwie mówi ich intuicja, jakie mają własne doświadczenia. Szukasz miejsc, w których znaczenia słów w ich ustach różnią się od znaczeń w twoich tabelach.',maps:'DATASCI'},
+    {text:'Zerkasz w stronę Komnaty Demonów: pytasz, czy ta sama niezgodność dotyczy też decyzji, które podejmuje wasz demon-model. Jeśli tak, widzisz, że chodzi o rysę w całym systemie wróżbiarskim, którą trzeba zbadać głębiej.',maps:'AIML'},
+    {text:'Prostujesz się i mówisz tylko: „Nasze dane są poprawne." Nie bardzo wiesz, jak przełożyć to, co wiesz, na język czyjegoś żołądka i doświadczeń, więc liczysz, że autorytet samych liczb wystarczy.',maps:'INTERN'},
+    {text:'Wzruszasz ramionami: mówisz „Dane są jakie są" i odkładasz pióro. Nie próbujesz wyjaśnić różnicy między pergaminami a przeczuciem.',maps:'FTI'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 8 / 10',intro:'W Komnacie Bliźniaczych Demonów stoją dwa słoje. W każdym uwięziony jest demon wróżbiarski, karmiony tymi samymi zwojami. Na pergaminach z prób ich wyniki wyglądają podobnie. Teraz jednak musisz zdecydować, którego z nich wypuścić do prawdziwego świata.',
+  text:'Kogo wybierasz?',
+  answers:[
+    {text:'Wybierasz demona prostszego w okiełznaniu: sprawdzasz, który ma mniej kapryśnych powiązań, prostszy rytuał przywoływania i łatwiej go będzie na nowo nauczyć, gdy zmieni się świat i napłyną nowe zwoje.',maps:'DATAENG'},
+    {text:'Wybierasz demona, który mówi jaśniej: patrzysz, który lepiej zachowuje się w różnych częściach świata i którego decyzje da się łatwiej wyjaśnić śmiertelnikom. Wiesz, że jedna liczba „dokładności" potrafi ukryć poważne dziury.',maps:'DATASCI'},
+    {text:'Wybierasz demona szybszego od cienia: sprawdzasz, który odpowiada szybciej, zużywa mniej mocy Wieży i nie dławi się, gdy tłum próśb rośnie do tysięcy.',maps:'AIML'},
+    {text:'Odsuwasz się od piedestałów: pytasz tylko „Który jest lepszy?" i czekasz, aż ktoś inny podejmie decyzję w twoim imieniu.',maps:'INTERN'},
+    {text:'Otwierasz oba słoje naraz i wypuszczasz dwóch demonów do świata: „Zobaczymy, który się sprawdzi." Nie masz żadnego planu, jak ocenić wynik ani jak posprzątać bałagan, gdy ich głosy zaczną sobie przeczyć.',maps:'FTI'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 9 / 10',intro:'Podczas narady w starym Skrzydle Archiwum ktoś przesuwa palcem wzdłuż kolumn raportu i zatrzymuje się na jednej: „A ta liczba? Skąd się bierze ta zmienna?" Zapada krótka cisza. Ty nie wiesz. Starszy skryba nie wie. Zmienna pojawia się w pergaminach od miesięcy, ale jej historia zniknęła jak stary komentarz zdrapany z marginesu.',
+  text:'Co robisz?',
+  answers:[
+    {text:'Sięgasz po nitkę śladu: zaczynasz śledzić drogę tej zmiennej wstecz, przechodząc przez kolejne warstwy zwojów i rytuałów — od raportu, przez pośrednie przekształcenia, aż po najbardziej pierwotne źródło, jakie zdołasz znaleźć.',maps:'DATAENG'},
+    {text:'Patrzysz na kolumnę jak na podejrzanego: zastanawiasz się, czy bez wiedzy o jej źródle można dalej opierać na niej wnioski. Rozważasz, czy lepiej tymczasowo oznaczyć ją jako „wątpliwą" — dopóki jej historia nie zostanie odtworzona, nie powinna być podstawą żadnej ważnej decyzji.',maps:'DATASCI'},
+    {text:'Sprawdzasz, dokąd jeszcze sięga jej cień: szukasz, czy ta sama tajemnicza zmienna nie płynie innymi kanałami — do demonów-modeli w prawdziwych komnatach, do automatów podejmujących decyzje bez udziału człowieka.',maps:'AIML'},
+    {text:'Rozkładasz ręce: mówisz tylko „Nie wiem, skąd to jest" i na tym kończysz. Kolumna zostaje w raportach jak bezimienny duch.',maps:'INTERN'},
+    {text:'Sięgasz po pióro kreatywne: w dokumentacji dopisujesz po prostu „główna baza" jako źródło tej zmiennej. Brzmi wystarczająco poważnie, żeby nikt dalej nie drążył.',maps:'FTI'}
+  ]},
+  {label:'PROTOKÓŁ DOPRECYZOWUJĄCY 10 / 10',intro:'Na dziedziniec Wieży ktoś zrzucił nową skrzynię. Jest ciężka od zwojów: świeże dane, tabele pełne liczb. Przy skrzyni nie ma żadnego pergaminu z pytaniem. Nie ma opisu problemu, który trzeba rozwiązać. Jest tylko lakoniczna notatka: „Może się wam przyda."',
+  text:'Co robisz?',
+  answers:[
+    {text:'Najpierw pytasz: „Po co?" Zanim dotkniesz choć jednego zwoju, próbujesz ustalić, jakie decyzje mają być wspierane tymi danymi, jakie pytania ktoś chce zadawać. Dane bez celu to tylko hałas.',maps:'DATASCI'},
+    {text:'Zaczynasz od inwentaryzacji: rozkładasz zwoje na stołach, opisujesz ich strukturę, formę, jakość. Sprawdzasz typy pól, braki, powtórzenia. Chcesz, by gdy pojawi się pytanie, skrzynia była już uporządkowana i gotowa.',maps:'DATAENG'},
+    {text:'Pozwalasz sobie na kontrolowaną zabawę: robisz kilka szybkich szkiców wykresów i prostych miar, żeby zobaczyć, jakie wzory w ogóle w tych danych mieszkają. Traktujesz to jak rekonesans.',maps:'AIML'},
+    {text:'Wrzucasz skrzynię do magazynu: odkładasz ją „na potem", bez opisu i bez większego zastanowienia. Jeśli kiedyś ktoś zapyta o te dane, będziecie razem szukać.',maps:'INTERN'},
+    {text:'Po prostu „kopiesz w danych": zaczynasz generować raporty i dziesiątki wykresów, licząc na to, że „coś ciekawego wyskoczy". Ufasz, że jeśli pokażesz wystarczająco dużo wzorów, ktoś sam dopisze do nich sens.',maps:'FTI'}
+  ]}
+]
+
+};
+
+// ══════════════════════════════════════════════════════════════════
+// STATE & ENGINE
+// ══════════════════════════════════════════════════════════════════
+const BLANK={phase:'intro',l1Index:0,l1Scores:{KODEKS:0,FUNDAMENT:0,STRAZ:0,ZGROMADZENIE:0,WYROCZNIA:0},dominant:null,isTied:false,l2Index:0,l2Scores:{},result:null};
+let gs=JSON.parse(JSON.stringify(BLANK));
+const RUNES=['Ⅰ','Ⅱ','Ⅲ','Ⅳ','Ⅴ'];
+
+function shuffle(a){const r=[...a];for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]];}return r;}
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo({top:0,behavior:'instant'});}
+function setPhase(n){['ph1','ph2','ph3'].forEach((id,i)=>document.getElementById(id).classList.toggle('active',i+1===n));}
+function renderProgress(done,total){document.getElementById('progress-row').innerHTML=Array.from({length:total},(_,i)=>`<span class="${i<done?'pdot done':i===done?'pdot active':'pdot'}">${i<done?'◈':i===done?'◆':'◇'}</span>`).join('');}
+function lockAnswers(btn){document.querySelectorAll('.ans-btn').forEach(b=>b.disabled=true);btn.classList.add('chosen');}
+function renderQ(q,total,done){
+  setPhase(gs.phase==='l1'?1:2);
+  renderProgress(done,total);
+  document.getElementById('q-label').textContent=q.label;
+  const ie=document.getElementById('q-intro');
+  ie.textContent=q.intro||'';ie.style.display=q.intro?'block':'none';
+  document.getElementById('q-text').textContent=q.text;
+  document.getElementById('ans-list').innerHTML=shuffle(q.answers).map((a,i)=>`<button class="ans-btn" onclick="pick('${a.maps}',this)"><span class="ans-mark">${RUNES[i]}</span><span>${a.text}</span></button>`).join('');
+}
+
+function startGame(){gs=JSON.parse(JSON.stringify(BLANK));gs.phase='l1';showScreen('screen-question');renderQ(L1[0],L1.length,0);}
+
+function pick(val,btn){
+  lockAnswers(btn);
+  if(gs.phase==='l1'){
+    gs.l1Scores[val]++;gs.l1Index++;
+    setTimeout(()=>{if(gs.l1Index<L1.length){renderQ(L1[gs.l1Index],L1.length,gs.l1Index);}else{resolveL1();showTransition();}},220);
+  } else {
+    gs.l2Scores[val]=(gs.l2Scores[val]||0)+1;gs.l2Index++;
+    const qs=L2[gs.dominant];
+    setTimeout(()=>{if(gs.l2Index<qs.length){renderQ(qs[gs.l2Index],qs.length,gs.l2Index);}else{resolveL2();showResult();}},220);
+  }
+}
+
+function resolveL1(){const s=Object.entries(gs.l1Scores).sort(([,a],[,b])=>b-a);gs.dominant=s[0][0];gs.isTied=s[0][1]===s[1][1];}
+
+function showTransition(){
+  const ORDER=['KODEKS','FUNDAMENT','STRAZ','ZGROMADZENIE','WYROCZNIA'];
+  document.getElementById('score-grid').innerHTML=ORDER.map(id=>{const c=CATEGORIES[id],v=gs.l1Scores[id],w=id===gs.dominant;return`<div class="score-cell${w?' winner':''}"><span class="sc-label">${c.name}</span><span class="sc-val">${v}</span></div>`;}).join('');
+  const cat=CATEGORIES[gs.dominant];
+  document.getElementById('cat-name').textContent=cat.name;
+  document.getElementById('cat-diegetic').textContent=cat.diegetic;
+  document.getElementById('trans-flavor').textContent=cat.flavor;
+  document.getElementById('tie-note').innerHTML=gs.isTied?'<span class="tie-badge">◇ Remis — kontynuacja doprecyzuje wynik ◇</span>':'';
+  showScreen('screen-transition');
+}
+
+function startLevel2(){gs.phase='l2';gs.l2Index=0;gs.l2Scores={};showScreen('screen-question');renderQ(L2[gs.dominant][0],L2[gs.dominant].length,0);}
+
+function resolveL2(){const s=Object.entries(gs.l2Scores).sort(([,a],[,b])=>b-a);gs.result=s[0][0];}
+
+function showResult(){
+  setPhase(3);
+  const sub=SUBTYPES[gs.result];
+  const desc=RESULTS[gs.result];
+  const cat=CATEGORIES[sub.cat||gs.dominant];
+  document.getElementById('result-header').innerHTML=`<p class="result-cat-label">${cat.diegetic} &nbsp;◈&nbsp; ${cat.name}</p><h2 class="result-title">${sub.name}</h2><p class="result-role">${sub.role}</p>`;
+  document.getElementById('result-flavor').textContent=desc.flavor;
+  document.getElementById('result-cols').innerHTML=`<div><p class="result-col-label">Aktualny profil</p><p class="result-col-text">${desc.profile}</p></div><div><p class="result-col-label">Rekomendowana ścieżka</p><p class="result-col-text">${desc.path}</p></div>`;
+  document.getElementById('result-guild-section').innerHTML=`<p class="result-col-label" style="margin-bottom:.6rem">O tej roli w Wieży</p><p class="result-guild-desc">${desc.role_desc}</p>`;
+  showScreen('screen-result');
+}
+
+function restartGame(){gs=JSON.parse(JSON.stringify(BLANK));showScreen('screen-intro');}
+</script>
+</body>
+</html>
